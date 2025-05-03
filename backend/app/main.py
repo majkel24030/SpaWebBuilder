@@ -22,10 +22,11 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For development. In production, specify domains
+    allow_origins=["*"],  # Allow all origins for development
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],  # For file downloads
 )
 
 # Setup API routes normally
@@ -47,17 +48,31 @@ if os.path.isdir(frontend_build_path):
     async def serve_frontend_root():
         return FileResponse(os.path.join(frontend_build_path, "index.html"))
         
+    # Add a simple health check endpoint
+    @app.get("/api/health", tags=["health"], summary="Health check", description="Check if API is operational")
+    async def health_check():
+        """
+        Simple health check endpoint that returns status ok if API is running.
+        Does not require authentication.
+        """
+        return {"status": "ok", "version": "1.0.0"}
+    
     @app.get("/{full_path:path}", include_in_schema=False)
     async def serve_frontend(full_path: str, request: Request):
-        # Exclude all /api/ paths - they should be handled by the API router
-        if full_path.startswith("api/"):
+        # Exclude all api paths - they should be handled by the API router
+        if full_path.startswith("api/") or full_path == "api":
             raise HTTPException(status_code=404, detail=f"API endpoint {full_path} not found")
             
         # Exclude docs and openapi.json
         if full_path in ["docs", "redoc", "openapi.json"]:
             raise HTTPException(status_code=404, detail=f"Endpoint /{full_path} not found")
             
-        # For all other routes, serve the frontend
+        # Check if file exists at requested path
+        requested_path = os.path.join(frontend_build_path, full_path)
+        if os.path.exists(requested_path) and os.path.isfile(requested_path):
+            return FileResponse(requested_path)
+            
+        # For all other routes, serve the frontend index.html (SPA routing)
         index_path = os.path.join(frontend_build_path, "index.html")
         if os.path.exists(index_path):
             return FileResponse(index_path)
