@@ -41,6 +41,18 @@ def read_categories(
     categories = db.query(Option.kategoria).distinct().all()
     return [category[0] for category in categories]
 
+@router.get("/category/{category}", response_model=List[OptionSchema])
+def read_options_by_category(
+    category: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+) -> Any:
+    """
+    Retrieve options filtered by category
+    """
+    options = db.query(Option).filter(Option.kategoria == category).all()
+    return options
+
 @router.post("/", response_model=OptionSchema)
 def create_option(
     option_in: OptionCreate,

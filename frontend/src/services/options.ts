@@ -15,10 +15,18 @@ export const getAllOptions = async (): Promise<Option[]> => {
  * Get options by category
  */
 export const getOptionsByCategory = async (category: string): Promise<Option[]> => {
-  return request<Option[]>({
-    url: `/options/category/${encodeURIComponent(category)}`,
-    method: 'GET'
-  });
+  try {
+    return request<Option[]>({
+      url: `/options/category/${encodeURIComponent(category)}`,
+      method: 'GET'
+    });
+  } catch (error) {
+    console.error(`Error fetching options for category ${category}:`, error);
+    // Fallback to filter from all options if specific category endpoint fails
+    console.log("Falling back to filtered options from full list");
+    const allOptions = await getAllOptions();
+    return allOptions.filter(option => option.kategoria === category);
+  }
 };
 
 /**
