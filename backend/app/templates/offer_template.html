@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oferta {{offer.number}}</title>
+    <style>
+        @page {
+            margin: 2cm;
+            @top-center {
+                content: "Oferta {{offer.number}}";
+                font-family: Arial, sans-serif;
+                font-size: 10pt;
+                color: #666;
+            }
+            @bottom-center {
+                content: "Strona " counter(page) " z " counter(pages);
+                font-family: Arial, sans-serif;
+                font-size: 10pt;
+                color: #666;
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            margin-bottom: 2cm;
+        }
+        .company-info {
+            text-align: right;
+            margin-bottom: 1cm;
+        }
+        .company-name {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 0.5cm;
+        }
+        .company-details {
+            font-size: 10pt;
+            color: #666;
+        }
+        .offer-details {
+            margin-bottom: 1cm;
+        }
+        .offer-title {
+            font-size: 18pt;
+            font-weight: bold;
+            margin-bottom: 0.5cm;
+            color: #2563eb;
+            border-bottom: 1px solid #2563eb;
+            padding-bottom: 0.2cm;
+        }
+        .offer-info {
+            display: flex;
+            justify-content: space-between;
+        }
+        .customer-info, .offer-info-details {
+            width: 48%;
+        }
+        .info-label {
+            font-weight: bold;
+            margin-right: 0.5cm;
+        }
+        .items-title {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 1cm;
+            margin-bottom: 0.5cm;
+            color: #2563eb;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1cm;
+        }
+        .items-table th {
+            background-color: #f3f4f6;
+            padding: 0.3cm;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+        }
+        .items-table td {
+            padding: 0.3cm;
+            border-bottom: 1px solid #ddd;
+        }
+        .items-table .item-config {
+            font-size: 10pt;
+            color: #666;
+        }
+        .price {
+            text-align: right;
+            font-weight: bold;
+        }
+        .summary {
+            margin-left: auto;
+            width: 40%;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .summary-table td {
+            padding: 0.2cm;
+        }
+        .summary-table .label {
+            text-align: left;
+        }
+        .summary-table .value {
+            text-align: right;
+            font-weight: bold;
+        }
+        .total-row {
+            font-size: 14pt;
+            color: #2563eb;
+            border-top: 2px solid #2563eb;
+        }
+        .notes {
+            margin-top: 1cm;
+            border-top: 1px solid #ddd;
+            padding-top: 0.5cm;
+        }
+        .notes-title {
+            font-weight: bold;
+            margin-bottom: 0.2cm;
+        }
+        .footer {
+            margin-top: 2cm;
+            font-size: 10pt;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company-info">
+            <div class="company-name">WindoorConfig</div>
+            <div class="company-details">
+                System konfiguracji ofert stolarki okiennej i drzwiowej<br>
+                ul. Przykładowa 123, 00-000 Warszawa<br>
+                Tel: +48 123 456 789 | Email: kontakt@windoorconfig.pl<br>
+                NIP: 123-456-78-90 | REGON: 123456789
+            </div>
+        </div>
+        
+        <div class="offer-details">
+            <div class="offer-title">Oferta numer: {{offer.number}}</div>
+            <div class="offer-info">
+                <div class="customer-info">
+                    <p><span class="info-label">Klient:</span> {{offer.customer}}</p>
+                    <p><span class="info-label">Data oferty:</span> {{offer.date}}</p>
+                </div>
+                <div class="offer-info-details">
+                    <p><span class="info-label">Ważność oferty:</span> 30 dni</p>
+                    <p><span class="info-label">Termin realizacji:</span> 4-6 tygodni</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="items-title">Pozycje oferty</div>
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Lp.</th>
+                <th>Produkt</th>
+                <th>Wymiary (mm)</th>
+                <th>Konfiguracja</th>
+                <th>Cena netto (EUR)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{item.type_name}}</td>
+                <td>{{item.width}} × {{item.height}}</td>
+                <td>
+                    <div class="item-config">
+                        {% for category, value in item.configuration.items() %}
+                        <div>{{category}}: {{value}}</div>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td class="price">{{"{:.2f}".format(item.price_net)}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="summary">
+        <table class="summary-table">
+            <tr>
+                <td class="label">Suma netto:</td>
+                <td class="value">{{"{:.2f}".format(offer.net_total)}} EUR</td>
+            </tr>
+            <tr>
+                <td class="label">VAT ({{vat_rate}}%):</td>
+                <td class="value">{{"{:.2f}".format(offer.vat_total)}} EUR</td>
+            </tr>
+            <tr class="total-row">
+                <td class="label">Suma brutto:</td>
+                <td class="value">{{"{:.2f}".format(offer.gross_total)}} EUR</td>
+            </tr>
+        </table>
+    </div>
+    
+    {% if offer.notes %}
+    <div class="notes">
+        <div class="notes-title">Uwagi:</div>
+        <p>{{offer.notes}}</p>
+    </div>
+    {% endif %}
+    
+    <div class="footer">
+        <p>Dziękujemy za skorzystanie z naszej oferty!</p>
+        <p>Wszystkie ceny podane są w EUR. Oferta jest ważna przez 30 dni od daty wystawienia.</p>
+    </div>
+</body>
+</html>

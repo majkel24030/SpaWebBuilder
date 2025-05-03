@@ -1,0 +1,28 @@
+modules = ["nodejs-20", "python-3.11"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Backend FastAPI Server"
+
+[[workflows.workflow]]
+name = "Backend FastAPI Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend && pip install -r requirements.txt && python -m app.main"
+waitForPort = 8000
+
+[deployment]
+run = ["sh", "-c", "cd backend && pip install -r requirements.txt && python -m app.main"]

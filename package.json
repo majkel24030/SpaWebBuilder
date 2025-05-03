@@ -1,0 +1,12 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "Profesjonalny system webowy typu SPA (Single Page Application) do tworzenia, konfigurowania i generowania ofert PDF dla firm zajmujących się stolarką okienną i drzwiową.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

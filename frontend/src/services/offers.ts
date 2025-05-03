@@ -1,0 +1,120 @@
+import { Offer, OfferFilter } from '../types';
+import { request } from './api';
+
+/**
+ * Get all offers for the current user
+ */
+export const getOffers = async (filter?: OfferFilter): Promise<Offer[]> => {
+  let url = '/offers/';
+  
+  // Add query parameters for filtering
+  if (filter) {
+    const params = new URLSearchParams();
+    
+    if (filter.search) {
+      params.append('search', filter.search);
+    }
+    
+    if (filter.dateFrom) {
+      params.append('date_from', filter.dateFrom);
+    }
+    
+    if (filter.dateTo) {
+      params.append('date_to', filter.dateTo);
+    }
+    
+    if (filter.sortBy) {
+      params.append('sort_by', filter.sortBy);
+      if (filter.sortDirection) {
+        params.append('sort_direction', filter.sortDirection);
+      }
+    }
+    
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+  }
+  
+  return request<Offer[]>({
+    method: 'GET',
+    url,
+  });
+};
+
+/**
+ * Get offer by ID
+ */
+export const getOfferById = async (id: number): Promise<Offer> => {
+  return request<Offer>({
+    method: 'GET',
+    url: `/offers/${id}`,
+  });
+};
+
+/**
+ * Create new offer
+ */
+export const createOffer = async (offer: Offer): Promise<Offer> => {
+  return request<Offer>({
+    method: 'POST',
+    url: '/offers/',
+    data: offer,
+  });
+};
+
+/**
+ * Update existing offer
+ */
+export const updateOffer = async (id: number, offer: Offer): Promise<Offer> => {
+  return request<Offer>({
+    method: 'PUT',
+    url: `/offers/${id}`,
+    data: offer,
+  });
+};
+
+/**
+ * Delete offer
+ */
+export const deleteOffer = async (id: number): Promise<void> => {
+  return request<void>({
+    method: 'DELETE',
+    url: `/offers/${id}`,
+  });
+};
+
+/**
+ * Generate PDF for offer
+ */
+export const generateOfferPDF = async (id: number): Promise<Blob> => {
+  const response = await request<Blob>({
+    method: 'GET',
+    url: `/offers/${id}/pdf`,
+    responseType: 'blob',
+  });
+  
+  return response;
+};
+
+/**
+ * Download offer PDF
+ */
+export const downloadOfferPDF = async (id: number, offerNumber: string): Promise<void> => {
+  const pdfBlob = await generateOfferPDF(id);
+  
+  // Create a URL for the blob
+  const blobUrl = window.URL.createObjectURL(pdfBlob);
+  
+  // Create a link element
+  const downloadLink = document.createElement('a');
+  downloadLink.href = blobUrl;
+  downloadLink.download = `Oferta_${offerNumber.replace(/\//g, '_')}.pdf`;
+  
+  // Append to the document, click it, and remove it
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+  
+  // Free up the blob URL
+  window.URL.revokeObjectURL(blobUrl);
+};

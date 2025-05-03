@@ -1,0 +1,229 @@
+import React, { useEffect, useState } from 'react';
+import { useOfferStore } from '../store/offerStore';
+import { useOptions, useOptionsByCategory, calculateOptionsPrice } from '../hooks/useOptions';
+import { Option } from '../types';
+import { validateDimensions } from '../utils/validation';
+import OptionSelector from './OptionSelector';
+import { roundPrice } from '../utils/price';
+
+interface ProductConfiguratorProps {
+  onSave: () => void;
+  onCancel: () => void;
+}
+
+const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCancel }) => {
+  const { options: allOptions, loading: optionsLoading } = useOptions();
+  const { currentProduct, updateProductConfig, updateProductOption, addProductToOffer } = useOfferStore();
+  
+  const [selectedType, setSelectedType] = useState<string>('');
+  const [width, setWidth] = useState<number>(0);
+  const [height, setHeight] = useState<number>(0);
+  const [dimensionError, setDimensionError] = useState<string | null>(null);
+  const [netPrice, setNetPrice] = useState<number>(0);
+  
+  // Get type options
+  const { options: typeOptions } = useOptionsByCategory('Typ elementu');
+  
+  useEffect(() => {
+    // Initialize product configuration if not already done
+    if (!currentProduct) {
+      updateProductConfig('typ', '');
+      updateProductConfig('szerokosc', 0);
+      updateProductConfig('wysokosc', 0);
+      updateProductConfig('options', {});
+    } else {
+      setSelectedType(currentProduct.typ);
+      setWidth(currentProduct.szerokosc);
+      setHeight(currentProduct.wysokosc);
+    }
+  }, [currentProduct, updateProductConfig]);
+  
+  // Calculate price when options change
+  useEffect(() => {
+    if (!currentProduct || optionsLoading || !allOptions.length) return;
+    
+    const baseTypeOption = allOptions.find(option => option.id_opcji === currentProduct.typ);
+    const basePrice = baseTypeOption ? baseTypeOption.cena_netto_eur : 0;
+    
+    const optionsPrice = calculateOptionsPrice(currentProduct.options, allOptions);
+    
+    // Apply size multiplier (example: 10% increase per each 500mm over 1000mm)
+    const baseSize = 1000; // 1000mm base size
+    const sizeMultiplier = 0.1; // 10% increase per 500mm over base
+    const sizeFactor = Math.max(1, 1 + Math.floor(Math.max(width - baseSize, height - baseSize) / 500) * sizeMultiplier);
+    
+    const totalPrice = basePrice * sizeFactor + optionsPrice;
+    setNetPrice(roundPrice(totalPrice));
+  }, [currentProduct, allOptions, optionsLoading, width, height]);
+  
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newType = e.target.value;
+    setSelectedType(newType);
+    updateProductConfig('typ', newType);
+  };
+  
+  const handleDimensionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    dimension: 'szerokosc' | 'wysokosc'
+  ) => {
+    const value = parseInt(e.target.value, 10);
+    
+    if (dimension === 'szerokosc') {
+      setWidth(value || 0);
+      updateProductConfig('szerokosc', value || 0);
+    } else {
+      setHeight(value || 0);
+      updateProductConfig('wysokosc', value || 0);
+    }
+    
+    // Validate dimensions if both width and height are set
+    if ((dimension === 'szerokosc' && height > 0) || (dimension === 'wysokosc' && width > 0)) {
+      const validation = validateDimensions(
+        dimension === 'szerokosc' ? value : width,
+        dimension === 'wysokosc' ? value : height,
+        selectedType
+      );
+      
+      setDimensionError(validation.valid ? null : validation.error);
+    }
+  };
+  
+  const handleOptionSelect = (category: string, optionId: string) => {
+    updateProductOption(category, optionId);
+  };
+  
+  const handleSave = () => {
+    if (!selectedType || width <= 0 || height <= 0 || dimensionError) {
+      return;
+    }
+    
+    addProductToOffer(netPrice);
+    onSave();
+  };
+  
+  // Get categories excluding "Typ elementu" which is handled separately
+  const categories = Array.from(
+    new Set(allOptions.map(option => option.kategoria))
+  ).filter(category => category !== 'Typ elementu');
+  
+  if (optionsLoading) {
+    return <div className="flex justify-center p-8">Ładowanie opcji...</div>;
+  }
+  
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-xl font-semibold text-gray-800 mb-6">Konfiguracja produktu</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Typ elementu
+          </label>
+          <select
+            value={selectedType}
+            onChange={handleTypeChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Wybierz typ elementu</option>
+            {typeOptions.map(option => (
+              <option key={option.id_opcji} value={option.id_opcji}>
+                {option.nazwa} ({option.cena_netto_eur} EUR)
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        <div>
+          <h3 className="block text-sm font-medium text-gray-700 mb-2">
+            Wymiary (mm)
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">
+                Szerokość
+              </label>
+              <input
+                type="number"
+                value={width || ''}
+                onChange={(e) => handleDimensionChange(e, 'szerokosc')}
+                min="400"
+                max="3000"
+                placeholder="np. 1200"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">
+                Wysokość
+              </label>
+              <input
+                type="number"
+                value={height || ''}
+                onChange={(e) => handleDimensionChange(e, 'wysokosc')}
+                min="400"
+                max="3000"
+                placeholder="np. 1400"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+          {dimensionError && (
+            <p className="mt-2 text-sm text-red-600">{dimensionError}</p>
+          )}
+        </div>
+      </div>
+      
+      {selectedType && (
+        <div className="border-t border-gray-200 pt-6">
+          <h3 className="text-lg font-medium text-gray-800 mb-4">Opcje konfiguracji</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map(category => (
+              <OptionSelector
+                key={category}
+                category={category}
+                selectedOption={currentProduct?.options[category] || ''}
+                onSelect={handleOptionSelect}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+      
+      <div className="mt-8 border-t border-gray-200 pt-6">
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-lg font-semibold text-gray-800">
+            Cena netto:
+          </span>
+          <span className="text-xl font-bold text-blue-600">
+            {netPrice.toFixed(2)} EUR
+          </span>
+        </div>
+        
+        <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Anuluj
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={!selectedType || width <= 0 || height <= 0 || !!dimensionError}
+            className={`px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white ${
+              !selectedType || width <= 0 || height <= 0 || !!dimensionError
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            }`}
+          >
+            Dodaj do oferty
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductConfigurator;
