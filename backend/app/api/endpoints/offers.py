@@ -156,8 +156,9 @@ def generate_pdf(
     # Generate PDF
     pdf_content = generate_offer_pdf(db, offer)
     
-    # Return PDF
+    # Return PDF - usuwamy header Content-Disposition: attachment, aby plik był otwierany w przeglądarce
+    # zamiast automatycznie pobierany
     headers = {
-        'Content-Disposition': f'attachment; filename="Oferta_{offer.numer.replace("/", "_")}.pdf"'
+        'Content-Disposition': f'inline; filename="Oferta_{offer.numer.replace("/", "_")}.pdf"'
     }
     return Response(content=pdf_content, media_type="application/pdf", headers=headers)

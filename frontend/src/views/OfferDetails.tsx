@@ -72,7 +72,8 @@ const OfferDetails: React.FC = () => {
       setIsGeneratingPdf(true);
       await downloadOfferPDF(parseInt(id), offer.numer);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate PDF');
+      console.error('Error generating PDF:', err);
+      setError(err instanceof Error ? err.message : 'Nie udało się wygenerować PDF');
     } finally {
       setIsGeneratingPdf(false);
     }

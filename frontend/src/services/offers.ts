@@ -97,35 +97,25 @@ export const generateOfferPDF = async (id: number): Promise<Blob> => {
 };
 
 /**
- * Download offer PDF
+ * Display and download offer PDF
  */
 export const downloadOfferPDF = async (id: number, offerNumber: string): Promise<void> => {
-  // Using the global downloadPDF function from fix-pdf-download.js
-  if (window.downloadPDF) {
-    window.downloadPDF(id, offerNumber);
-  } else {
-    // Fallback to the original method
-    try {
-      const pdfBlob = await generateOfferPDF(id);
-      
-      // Create a URL for the blob
-      const blobUrl = window.URL.createObjectURL(pdfBlob);
-      
-      // Create a link element
-      const downloadLink = document.createElement('a');
-      downloadLink.href = blobUrl;
-      downloadLink.download = `Oferta_${offerNumber.replace(/\//g, '_')}.pdf`;
-      
-      // Append to the document, click it, and remove it
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      
-      // Free up the blob URL
-      window.URL.revokeObjectURL(blobUrl);
-    } catch (error) {
-      console.error('Error downloading PDF:', error);
-      alert('Nie udało się pobrać pliku PDF. Spróbuj ponownie później.');
-    }
+  try {
+    console.log('Processing PDF for offer:', id, offerNumber);
+    
+    // Get the PDF blob
+    const pdfBlob = await generateOfferPDF(id);
+    console.log('PDF blob received, size:', pdfBlob.size, 'bytes');
+    
+    // Create a URL for the blob
+    const blobUrl = window.URL.createObjectURL(pdfBlob);
+    console.log('Created blob URL:', blobUrl);
+    
+    // Otwórz PDF w nowej karcie przeglądarki
+    // Użytkownik może go tam zobaczyć i pobrać używając standardowych kontrolek przeglądarki
+    window.open(blobUrl, '_blank');
+  } catch (error) {
+    console.error('Error displaying PDF:', error);
+    alert('Nie udało się wyświetlić pliku PDF. Spróbuj ponownie później.');
   }
 };
