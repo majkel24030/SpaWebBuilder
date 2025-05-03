@@ -13,7 +13,7 @@ from app.utils.security import ALGORITHM
 from app.config import settings
 
 # OAuth2 scheme for token authentication
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 def get_db() -> Generator:
     """
