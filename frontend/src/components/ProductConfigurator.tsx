@@ -24,19 +24,30 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
   // Get type options
   const { options: typeOptions } = useOptionsByCategory('Typ elementu');
   
+  // Inicjalizacja produktu przy pierwszym renderowaniu
   useEffect(() => {
-    // Initialize product configuration if not already done
-    if (!currentProduct) {
-      updateProductConfig('typ', '');
-      updateProductConfig('szerokosc', 0);
-      updateProductConfig('wysokosc', 0);
-      updateProductConfig('options', {});
-    } else {
+    console.log("Inicjalizowanie konfiguracji produktu");
+    // Wywołaj initProductConfig bezpośrednio
+    useOfferStore.getState().initProductConfig();
+    
+    // Aktualizuj lokalne stany, jeśli currentProduct jest już zdefiniowany
+    if (currentProduct) {
       setSelectedType(currentProduct.typ);
       setWidth(currentProduct.szerokosc);
       setHeight(currentProduct.wysokosc);
+      console.log("Zaktualizowano lokalne stany z produktu:", currentProduct);
     }
-  }, [currentProduct, updateProductConfig]);
+  }, []); // Pusta tablica zależności - wykonaj tylko raz przy montowaniu komponentu
+  
+  // Drugi efekt do synchronizacji stanów, gdy currentProduct się zmieni
+  useEffect(() => {
+    if (currentProduct) {
+      setSelectedType(currentProduct.typ || '');
+      setWidth(currentProduct.szerokosc || 0);
+      setHeight(currentProduct.wysokosc || 0);
+      console.log("Synchronizacja stanu z produktem:", currentProduct);
+    }
+  }, [currentProduct]);
   
   // Calculate price when options change
   useEffect(() => {
@@ -100,6 +111,19 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
   };
   
   const handleOptionSelect = (category: string, optionId: string) => {
+    // Upewnij się, że produkt jest zainicjalizowany przed próbą aktualizacji opcji
+    if (!currentProduct) {
+      console.warn("Produkt nie jest zainicjalizowany, inicjalizowanie...");
+      useOfferStore.getState().initProductConfig();
+      // Odczekaj jedną ramkę przed wykonaniem aktualizacji
+      setTimeout(() => {
+        console.log("Ponowna próba aktualizacji opcji po inicjalizacji produktu");
+        updateProductOption(category, optionId);
+      }, 0);
+      return;
+    }
+    
+    console.log(`Aktualizacja opcji dla kategorii ${category} na wartość ${optionId}`);
     updateProductOption(category, optionId);
   };
   
