@@ -42,17 +42,28 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
   useEffect(() => {
     if (!currentProduct || optionsLoading || !allOptions.length) return;
     
+    console.log("Calculating price with product:", currentProduct);
+    
     const baseTypeOption = allOptions.find(option => option.id_opcji === currentProduct.typ);
     const basePrice = baseTypeOption ? baseTypeOption.cena_netto_eur : 0;
     
+    console.log("Base price from type:", basePrice);
+    
+    // Log selected options for debugging
+    console.log("Selected options:", currentProduct.options);
+    
     const optionsPrice = calculateOptionsPrice(currentProduct.options, allOptions);
+    console.log("Additional options price:", optionsPrice);
     
     // Apply size multiplier (example: 10% increase per each 500mm over 1000mm)
     const baseSize = 1000; // 1000mm base size
     const sizeMultiplier = 0.1; // 10% increase per 500mm over base
     const sizeFactor = Math.max(1, 1 + Math.floor(Math.max(width - baseSize, height - baseSize) / 500) * sizeMultiplier);
+    console.log("Size factor:", sizeFactor);
     
     const totalPrice = basePrice * sizeFactor + optionsPrice;
+    console.log("Total calculated price:", totalPrice);
+    
     setNetPrice(roundPrice(totalPrice));
   }, [currentProduct, allOptions, optionsLoading, width, height]);
   

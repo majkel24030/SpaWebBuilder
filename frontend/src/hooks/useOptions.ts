@@ -137,12 +137,30 @@ export const calculateOptionsPrice = (
 ): number => {
   let totalPrice = 0;
   
-  Object.values(selectedOptions).forEach(optionId => {
+  console.log("Calculating price for options:", selectedOptions);
+  
+  // Get array of option IDs from the selected options object
+  const optionIds = Object.values(selectedOptions);
+  console.log("Option IDs to price:", optionIds);
+  
+  if (optionIds.length === 0) {
+    console.log("No options selected, price is 0");
+    return 0;
+  }
+  
+  // Price each option
+  optionIds.forEach(optionId => {
+    if (!optionId) return; // Skip empty options
+    
     const option = findOptionById(allOptions, optionId);
     if (option) {
+      console.log(`Option ${option.id_opcji} (${option.nazwa}) price: ${option.cena_netto_eur} EUR`);
       totalPrice += option.cena_netto_eur;
+    } else {
+      console.warn(`Option with ID ${optionId} not found in available options`);
     }
   });
   
+  console.log("Total options price:", totalPrice);
   return totalPrice;
 };

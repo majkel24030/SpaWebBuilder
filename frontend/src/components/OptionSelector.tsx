@@ -25,6 +25,17 @@ const OptionSelector: React.FC<OptionSelectorProps> = ({
     }
   }, [category, options, loading, error]);
   
+  // Log when selectedOption changes
+  useEffect(() => {
+    console.log(`Selected option for ${category} changed to:`, selectedOption);
+  }, [category, selectedOption]);
+  
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newValue = e.target.value;
+    console.log(`Option selected for ${category}:`, newValue);
+    onSelect(category, newValue);
+  };
+  
   if (loading) {
     return <div className="animate-pulse h-12 bg-gray-200 rounded"></div>;
   }
@@ -62,12 +73,12 @@ const OptionSelector: React.FC<OptionSelectorProps> = ({
   return (
     <div className="mb-4">
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        {category}
+        {category} {selectedOption ? '✓' : ''}
       </label>
       <select
-        value={selectedOption}
-        onChange={(e) => onSelect(category, e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        value={selectedOption || ""}
+        onChange={handleChange}
+        className={`w-full px-3 py-2 border ${selectedOption ? 'border-green-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
       >
         <option value="">Wybierz opcję</option>
         {options.map(option => (

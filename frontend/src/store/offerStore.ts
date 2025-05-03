@@ -103,17 +103,33 @@ export const useOfferStore = create<OfferState>()((set, get) => ({
   
   updateProductOption: (category, optionId) => {
     const { currentProduct } = get();
-    if (!currentProduct) return;
+    if (!currentProduct) {
+      console.error("Cannot update product option: currentProduct is null");
+      return;
+    }
     
-    set({
-      currentProduct: {
-        ...currentProduct,
-        options: {
-          ...currentProduct.options,
-          [category]: optionId
-        }
-      }
-    });
+    // Clone the current options
+    const updatedOptions = { ...currentProduct.options };
+    
+    // If option ID is empty, remove this category from options
+    if (!optionId) {
+      delete updatedOptions[category];
+      console.log(`Removed option for category ${category}`);
+    } else {
+      // Otherwise, set/update the option for this category
+      updatedOptions[category] = optionId;
+      console.log(`Set option for category ${category} to ${optionId}`);
+    }
+    
+    // Update the product with new options
+    const updatedProduct = {
+      ...currentProduct,
+      options: updatedOptions
+    };
+    
+    console.log("Updated product configuration:", updatedProduct);
+    
+    set({ currentProduct: updatedProduct });
   },
   
   addProductToOffer: (netPrice) => {
