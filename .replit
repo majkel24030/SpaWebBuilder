@@ -16,6 +16,10 @@ author = "agent"
 task = "workflow.run"
 args = "Backend FastAPI Server"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Frontend React App"
+
 [[workflows.workflow]]
 name = "Backend FastAPI Server"
 author = "agent"
@@ -25,5 +29,18 @@ task = "shell.exec"
 args = "cd backend && pip install -r requirements.txt && python -m app.main"
 waitForPort = 8000
 
+[[workflows.workflow]]
+name = "Frontend React App"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend && NODE_ENV=production npm run dev:replit"
+waitForPort = 5000
+
 [deployment]
 run = ["sh", "-c", "cd backend && pip install -r requirements.txt && python -m app.main"]
+
+[[ports]]
+localPort = 8000
+externalPort = 80

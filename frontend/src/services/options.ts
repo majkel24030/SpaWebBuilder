@@ -6,8 +6,8 @@ import { request } from './api';
  */
 export const getAllOptions = async (): Promise<Option[]> => {
   return request<Option[]>({
-    method: 'GET',
     url: '/options/',
+    method: 'GET'
   });
 };
 
@@ -16,8 +16,8 @@ export const getAllOptions = async (): Promise<Option[]> => {
  */
 export const getOptionsByCategory = async (category: string): Promise<Option[]> => {
   return request<Option[]>({
-    method: 'GET',
-    url: `/options/?category=${encodeURIComponent(category)}`,
+    url: `/options/category/${encodeURIComponent(category)}`,
+    method: 'GET'
   });
 };
 
@@ -26,8 +26,8 @@ export const getOptionsByCategory = async (category: string): Promise<Option[]> 
  */
 export const getCategories = async (): Promise<string[]> => {
   return request<string[]>({
-    method: 'GET',
     url: '/options/categories',
+    method: 'GET'
   });
 };
 
@@ -41,7 +41,6 @@ export const getOptionsGroupedByCategory = async (): Promise<OptionsByCategory> 
     if (!acc[option.kategoria]) {
       acc[option.kategoria] = [];
     }
-    
     acc[option.kategoria].push(option);
     return acc;
   }, {});
@@ -52,19 +51,19 @@ export const getOptionsGroupedByCategory = async (): Promise<OptionsByCategory> 
  */
 export const getOptionById = async (id: string): Promise<Option> => {
   return request<Option>({
-    method: 'GET',
-    url: `/options/${id}`,
+    url: `/options/${encodeURIComponent(id)}`,
+    method: 'GET'
   });
 };
 
 /**
  * Admin: Create a new option
  */
-export const createOption = async (option: Omit<Option, 'id'>): Promise<Option> => {
+export const createOption = async (option: Omit<Option, 'id_opcji'>): Promise<Option> => {
   return request<Option>({
-    method: 'POST',
     url: '/options/',
-    data: option,
+    method: 'POST',
+    data: option
   });
 };
 
@@ -73,9 +72,9 @@ export const createOption = async (option: Omit<Option, 'id'>): Promise<Option> 
  */
 export const updateOption = async (id: string, option: Partial<Option>): Promise<Option> => {
   return request<Option>({
+    url: `/options/${encodeURIComponent(id)}`,
     method: 'PUT',
-    url: `/options/${id}`,
-    data: option,
+    data: option
   });
 };
 
@@ -84,7 +83,7 @@ export const updateOption = async (id: string, option: Partial<Option>): Promise
  */
 export const deleteOption = async (id: string): Promise<void> => {
   return request<void>({
-    method: 'DELETE',
-    url: `/options/${id}`,
+    url: `/options/${encodeURIComponent(id)}`,
+    method: 'DELETE'
   });
 };

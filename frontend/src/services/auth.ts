@@ -1,26 +1,49 @@
-import { LoginCredentials, RegisterData, AuthResponse } from '../types';
+import { AuthResponse, LoginCredentials, RegisterData, User } from '../types';
 import { request } from './api';
 
 /**
  * Login user with credentials
  */
 export const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
-  return request<AuthResponse>({
-    method: 'POST',
+  const formData = new URLSearchParams();
+  formData.append('username', credentials.email);
+  formData.append('password', credentials.password);
+
+  const response = await request<AuthResponse>({
     url: '/auth/login',
-    data: credentials,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data: formData
   });
+
+  // Store token and user in localStorage
+  localStorage.setItem('token', response.access_token);
+  localStorage.setItem('user', JSON.stringify(response.user));
+
+  return response;
 };
 
 /**
  * Register new user
  */
 export const register = async (data: RegisterData): Promise<AuthResponse> => {
-  return request<AuthResponse>({
-    method: 'POST',
+  const response = await request<AuthResponse>({
     url: '/auth/register',
-    data,
+    method: 'POST',
+    data: {
+      email: data.email,
+      password: data.password,
+      full_name: data.full_name
+    }
   });
+
+  // Store token and user in localStorage
+  localStorage.setItem('token', response.access_token);
+  localStorage.setItem('user', JSON.stringify(response.user));
+
+  return response;
 };
 
 /**
@@ -28,17 +51,25 @@ export const register = async (data: RegisterData): Promise<AuthResponse> => {
  * We don't need to call the backend as we're using JWT
  */
 export const logout = (): void => {
-  // Nothing to do here, token will be cleared by the store
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/login';
 };
 
 /**
  * Get current user profile
  */
 export const getCurrentUser = async () => {
-  return request({
-    method: 'GET',
-    url: '/users/me'
-  });
+  try {
+    return await request<User>({
+      url: '/users/me',
+      method: 'GET'
+    });
+  } catch (error) {
+    console.error('Error getting current user:', error);
+    logout();
+    throw error;
+  }
 };
 
 /**

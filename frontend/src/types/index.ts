@@ -3,7 +3,7 @@ export interface User {
   id: number;
   email: string;
   full_name: string;
-  role: 'admin' | 'user';
+  role: string;
   is_active: boolean;
 }
 
@@ -12,10 +12,8 @@ export interface LoginCredentials {
   password: string;
 }
 
-export interface RegisterData {
-  email: string;
+export interface RegisterData extends LoginCredentials {
   full_name: string;
-  password: string;
 }
 
 export interface AuthResponse {
@@ -24,7 +22,7 @@ export interface AuthResponse {
   user: User;
 }
 
-// Option Types
+// Options Types
 export interface Option {
   id_opcji: string;
   kategoria: string;
@@ -60,25 +58,10 @@ export interface Offer {
   items: OfferItem[];
 }
 
-export interface OfferFormData {
-  klient: string;
-  numer: string;
-  data: string;
-  uwagi?: string;
-}
-
 export interface OfferFilter {
   search?: string;
-  dateFrom?: string;
-  dateTo?: string;
-  sortBy?: string;
-  sortDirection?: 'asc' | 'desc';
-}
-
-// Configuration Types
-export interface ProductConfig {
-  typ: string;
-  szerokosc: number;
-  wysokosc: number;
-  options: Record<string, string>;
+  date_from?: string;
+  date_to?: string;
+  sort_by?: string;
+  sort_direction?: string;
 }
