@@ -100,21 +100,32 @@ export const generateOfferPDF = async (id: number): Promise<Blob> => {
  * Download offer PDF
  */
 export const downloadOfferPDF = async (id: number, offerNumber: string): Promise<void> => {
-  const pdfBlob = await generateOfferPDF(id);
-  
-  // Create a URL for the blob
-  const blobUrl = window.URL.createObjectURL(pdfBlob);
-  
-  // Create a link element
-  const downloadLink = document.createElement('a');
-  downloadLink.href = blobUrl;
-  downloadLink.download = `Oferta_${offerNumber.replace(/\//g, '_')}.pdf`;
-  
-  // Append to the document, click it, and remove it
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  document.body.removeChild(downloadLink);
-  
-  // Free up the blob URL
-  window.URL.revokeObjectURL(blobUrl);
+  // Using the global downloadPDF function from fix-pdf-download.js
+  if (window.downloadPDF) {
+    window.downloadPDF(id, offerNumber);
+  } else {
+    // Fallback to the original method
+    try {
+      const pdfBlob = await generateOfferPDF(id);
+      
+      // Create a URL for the blob
+      const blobUrl = window.URL.createObjectURL(pdfBlob);
+      
+      // Create a link element
+      const downloadLink = document.createElement('a');
+      downloadLink.href = blobUrl;
+      downloadLink.download = `Oferta_${offerNumber.replace(/\//g, '_')}.pdf`;
+      
+      // Append to the document, click it, and remove it
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      
+      // Free up the blob URL
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      alert('Nie udało się pobrać pliku PDF. Spróbuj ponownie później.');
+    }
+  }
 };

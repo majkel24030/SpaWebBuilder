@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5000",
     "dev:replit": "VITE_PORT=5000 vite --host 0.0.0.0 --port 5000 --strict-port",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && cp src/fix-pdf-download.js dist/assets/",
     "preview": "vite preview"
   },
   "dependencies": {
