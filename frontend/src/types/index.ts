@@ -43,6 +43,7 @@ export interface OfferItem {
   wysokosc: number;
   konfiguracja: Record<string, string>;
   cena_netto: number;
+  ilosc?: number; // Nowe pole dla ilości okien danego typu
 }
 
 export interface Offer {
@@ -72,4 +73,5 @@ export interface ProductConfig {
   wysokosc: number;
   options: Record<string, string>;
   price?: number;
+  ilosc?: number;
 }

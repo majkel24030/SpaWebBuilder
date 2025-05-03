@@ -35,6 +35,7 @@ class OfferItem(Base):
     wysokosc = Column(Integer, nullable=False)
     konfiguracja = Column(JSON, nullable=False, default={})  # Store option IDs by category
     cena_netto = Column(Float, nullable=False)
+    ilosc = Column(Integer, nullable=False, default=1)  # Ilość okien tego typu
 
     # Relationships
     offer = relationship("Offer", back_populates="items")

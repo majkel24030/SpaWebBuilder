@@ -36,6 +36,9 @@ def generate_offer_pdf(db: Session, offer: Offer) -> bytes:
             option = options_dict.get(option_id)
             config_data[category] = option.nazwa if option else "Unknown Option"
         
+        # Pobierz ilość okien (domyślnie 1, jeśli nie jest zdefiniowana)
+        quantity = getattr(item, 'ilosc', 1)
+        
         # Create item data
         items_data.append({
             "id": item.id,
@@ -43,7 +46,9 @@ def generate_offer_pdf(db: Session, offer: Offer) -> bytes:
             "width": item.szerokosc,
             "height": item.wysokosc,
             "configuration": config_data,
-            "price_net": item.cena_netto
+            "price_net": item.cena_netto,
+            "quantity": quantity,
+            "total_price_net": item.cena_netto * quantity
         })
     
     # Prepare data for template
@@ -62,10 +67,31 @@ def generate_offer_pdf(db: Session, offer: Offer) -> bytes:
     }
     
     # Render template to HTML
-    template_loader = FileSystemLoader(searchpath="./app/templates")
-    template_env = Environment(loader=template_loader)
-    template = template_env.get_template("offer_template.html")
-    html_content = template.render(**template_data)
+    try:
+        import os
+        # Użyj ścieżki względnej z różnych możliwych lokalizacji
+        template_paths = [
+            "./app/templates",
+            "./backend/app/templates",
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates")
+        ]
+        # Znajdź poprawną ścieżkę
+        template_path = None
+        for path in template_paths:
+            if os.path.exists(os.path.join(path, "offer_template.html")):
+                template_path = path
+                break
+        
+        if not template_path:
+            raise Exception(f"Nie można znaleźć szablonu offer_template.html w ścieżkach: {template_paths}")
+            
+        template_loader = FileSystemLoader(searchpath=template_path)
+        template_env = Environment(loader=template_loader)
+        template = template_env.get_template("offer_template.html")
+        html_content = template.render(**template_data)
+    except Exception as e:
+        print(f"Błąd podczas renderowania szablonu: {e}")
+        raise
     
     # Generate PDF from HTML
     with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as html_file:

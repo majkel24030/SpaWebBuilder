@@ -171,7 +171,9 @@
                 <th>Produkt</th>
                 <th>Wymiary (mm)</th>
                 <th>Konfiguracja</th>
+                <th>Ilość</th>
                 <th>Cena netto (EUR)</th>
+                <th>Razem (EUR)</th>
             </tr>
         </thead>
         <tbody>
@@ -187,7 +189,9 @@
                         {% endfor %}
                     </div>
                 </td>
+                <td class="text-center">{{item.quantity}}</td>
                 <td class="price">{{"{:.2f}".format(item.price_net)}}</td>
+                <td class="price">{{"{:.2f}".format(item.total_price_net)}}</td>
             </tr>
             {% endfor %}
         </tbody>

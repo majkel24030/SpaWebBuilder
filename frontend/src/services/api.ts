@@ -41,6 +41,10 @@ api.interceptors.response.use(
 export const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
   try {
     const response = await api(config);
+    // For 204 No Content responses with DELETE method, return undefined as T
+    if (response.status === 204 && config.method?.toUpperCase() === 'DELETE') {
+      return undefined as unknown as T;
+    }
     return response.data;
   } catch (error) {
     console.error('API request error:', error);

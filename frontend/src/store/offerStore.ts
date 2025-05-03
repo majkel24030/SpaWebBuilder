@@ -67,7 +67,8 @@ export const useOfferStore = create<OfferState>()((set, get) => ({
         typ: '',
         szerokosc: 0,
         wysokosc: 0,
-        options: {}
+        options: {},
+        ilosc: 1
       }
     });
   },
@@ -141,7 +142,8 @@ export const useOfferStore = create<OfferState>()((set, get) => ({
       szerokosc: currentProduct.szerokosc,
       wysokosc: currentProduct.wysokosc,
       konfiguracja: { ...currentProduct.options },
-      cena_netto: netPrice
+      cena_netto: netPrice,
+      ilosc: currentProduct.ilosc || 1
     };
     
     set({
@@ -191,7 +193,7 @@ export const useOfferStore = create<OfferState>()((set, get) => ({
     if (!currentOffer) return;
     
     const suma_netto = currentOffer.items.reduce(
-      (sum, item) => sum + item.cena_netto, 
+      (sum, item) => sum + (item.cena_netto * (item.ilosc || 1)), 
       0
     );
     

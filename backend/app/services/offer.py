@@ -35,7 +35,8 @@ def create_offer(db: Session, offer_in: OfferCreate, user_id: int) -> Offer:
             szerokosc=item_data.szerokosc,
             wysokosc=item_data.wysokosc,
             konfiguracja=item_data.konfiguracja,
-            cena_netto=item_data.cena_netto
+            cena_netto=item_data.cena_netto,
+            ilosc=item_data.ilosc if hasattr(item_data, 'ilosc') else 1
         )
         db.add(offer_item)
     
@@ -119,7 +120,8 @@ def update_offer(db: Session, offer: Offer, offer_in: OfferUpdate) -> Offer:
                 szerokosc=item_data.szerokosc,
                 wysokosc=item_data.wysokosc,
                 konfiguracja=item_data.konfiguracja,
-                cena_netto=item_data.cena_netto
+                cena_netto=item_data.cena_netto,
+                ilosc=item_data.ilosc if hasattr(item_data, 'ilosc') else 1
             )
             db.add(offer_item)
     
@@ -131,9 +133,23 @@ def delete_offer(db: Session, offer_id: int) -> None:
     """
     Delete offer and related items
     """
-    # The cascade delete will handle the offer_items
-    db.query(Offer).filter(Offer.id == offer_id).delete()
-    db.commit()
+    try:
+        # Get the offer first
+        offer = db.query(Offer).filter(Offer.id == offer_id).first()
+        if not offer:
+            return
+            
+        # Delete all offer items first
+        db.query(OfferItem).filter(OfferItem.offer_id == offer_id).delete(synchronize_session='fetch')
+        
+        # Then delete the offer
+        db.query(Offer).filter(Offer.id == offer_id).delete(synchronize_session='fetch')
+        
+        # Commit the transaction
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise e
 
 def is_offer_owner_or_admin(offer: Offer, user: User) -> bool:
     """

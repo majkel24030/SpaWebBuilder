@@ -18,6 +18,7 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
   const [selectedType, setSelectedType] = useState<string>('');
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(1);
   const [dimensionError, setDimensionError] = useState<string | null>(null);
   const [netPrice, setNetPrice] = useState<number>(0);
   
@@ -205,6 +206,25 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
           {dimensionError && (
             <p className="mt-2 text-sm text-red-600">{dimensionError}</p>
           )}
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Ilość
+          </label>
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => {
+              const value = parseInt(e.target.value);
+              if (value > 0) {
+                setQuantity(value);
+                updateProductConfig('ilosc', value);
+              }
+            }}
+            min="1"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
         </div>
       </div>
       

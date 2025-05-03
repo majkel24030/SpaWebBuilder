@@ -2,7 +2,7 @@ modules = ["nodejs-20", "python-3.11", "postgresql-16"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["pango", "cairo", "harfbuzz", "ffmpeg", "fontconfig"]
+packages = ["cairo", "ffmpeg", "fontconfig", "ghostscript", "glib", "harfbuzz", "pango"]
 
 [workflows]
 runButton = "Project"
@@ -22,11 +22,11 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd backend && pip install -r requirements.txt && python -m uvicorn app.main:app --host 0.0.0.0 --port 5000"
+args = "cd backend && pip install -r requirements.txt && python -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload"
 waitForPort = 5000
 
 [deployment]
-run = ["sh", "-c", "cd backend && pip install -r requirements.txt && python -m uvicorn app.main:app --host 0.0.0.0 --port 5000"]
+run = ["sh", "-c", "cd backend && pip install -r requirements.txt && python -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload"]
 
 [[ports]]
 localPort = 5000

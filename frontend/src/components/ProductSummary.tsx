@@ -34,10 +34,13 @@ const ProductSummary: React.FC<ProductSummaryProps> = ({
           <p className="text-sm text-gray-600 mt-1">
             Wymiary: {item.szerokosc} × {item.wysokosc} mm
           </p>
+          <p className="text-sm text-gray-600">
+            Ilość: {item.ilosc || 1} szt.
+          </p>
         </div>
         <div className="flex items-center space-x-4">
           <span className="font-medium text-blue-600">
-            {formatPrice(item.cena_netto, 'EUR')}
+            {formatPrice(item.cena_netto, 'EUR')} x {item.ilosc || 1} = {formatPrice(item.cena_netto * (item.ilosc || 1), 'EUR')}
           </span>
           <button
             onClick={() => onRemove(index)}
