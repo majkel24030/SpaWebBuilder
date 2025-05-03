@@ -27,7 +27,8 @@ class Settings(BaseSettings):
         )
 
     # JWT Authentication
-    SECRET_KEY: str = os.getenv("SECRET_KEY", secrets.token_urlsafe(32))
+    # Using a fixed SECRET_KEY for development
+    SECRET_KEY: str = "d026b3d4d927dfa346c8644149c07247b01fc51d1be4a49defa18aee764b6a0f"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
     

@@ -33,14 +33,21 @@ def get_current_user(
     Dependency to get the current authenticated user
     """
     try:
+        # Print debugging information
+        print(f"Decoding token: {token[:10]}...")
+        print(f"Using SECRET_KEY: {settings.SECRET_KEY[:5]}...")
+        print(f"Using ALGORITHM: {ALGORITHM}")
+        
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[ALGORITHM]
         )
+        print(f"Decoded payload: {payload}")
         token_data = TokenPayload(**payload)
-    except (JWTError, ValidationError):
+    except (JWTError, ValidationError) as e:
+        print(f"JWT Error: {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
+            detail=f"Could not validate credentials: {str(e)}",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
