@@ -22,8 +22,8 @@ const OfferHistory: React.FC = () => {
       setLoading(true);
       const fetchedOffers = await getOffers({
         ...filter,
-        sortBy,
-        sortDirection,
+        sort_by: sortBy,
+        sort_direction: sortDirection,
         search: searchTerm
       });
       setOffers(fetchedOffers);
@@ -84,7 +84,7 @@ const OfferHistory: React.FC = () => {
     setSearchTerm(e.target.value);
   };
   
-  const handleDateFilterChange = (field: 'dateFrom' | 'dateTo', value: string) => {
+  const handleDateFilterChange = (field: 'date_from' | 'date_to', value: string) => {
     setFilter({
       ...filter,
       [field]: value
@@ -141,8 +141,8 @@ const OfferHistory: React.FC = () => {
             </label>
             <input
               type="date"
-              value={filter.dateFrom || ''}
-              onChange={(e) => handleDateFilterChange('dateFrom', e.target.value)}
+              value={filter.date_from || ''}
+              onChange={(e) => handleDateFilterChange('date_from', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -153,8 +153,8 @@ const OfferHistory: React.FC = () => {
             </label>
             <input
               type="date"
-              value={filter.dateTo || ''}
-              onChange={(e) => handleDateFilterChange('dateTo', e.target.value)}
+              value={filter.date_to || ''}
+              onChange={(e) => handleDateFilterChange('date_to', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
