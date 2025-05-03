@@ -15,18 +15,18 @@ export const getOffers = async (filter?: OfferFilter): Promise<Offer[]> => {
       params.append('search', filter.search);
     }
     
-    if (filter.dateFrom) {
-      params.append('date_from', filter.dateFrom);
+    if (filter.date_from) {
+      params.append('date_from', filter.date_from);
     }
     
-    if (filter.dateTo) {
-      params.append('date_to', filter.dateTo);
+    if (filter.date_to) {
+      params.append('date_to', filter.date_to);
     }
     
-    if (filter.sortBy) {
-      params.append('sort_by', filter.sortBy);
-      if (filter.sortDirection) {
-        params.append('sort_direction', filter.sortDirection);
+    if (filter.sort_by) {
+      params.append('sort_by', filter.sort_by);
+      if (filter.sort_direction) {
+        params.append('sort_direction', filter.sort_direction);
       }
     }
     
