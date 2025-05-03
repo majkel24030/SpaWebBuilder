@@ -1,0 +1,143 @@
+Zbuduj profesjonalny, w pełni działający system webowy typu SPA (Single Page Application) do tworzenia, konfigurowania i generowania ofert PDF dla firmy zajmującej się stolarką okienną i drzwiową. System ma zawierać frontend (React + TypeScript + TailwindCSS) oraz backend (FastAPI + PostgreSQL), obsługiwać użytkowników z rolami admin i użytkownik, umożliwiać pełną konfigurację produktów, kalkulację ceny i generowanie ofert w formacie PDF.
+
+⸻
+
+🎯 GŁÓWNE FUNKCJE SYSTEMU
+	1.	Tworzenie ofert zawierających wiele pozycji produktów (okna, drzwi)
+	2.	Dynamiczna konfiguracja każdej pozycji (wymiary + opcje)
+	3.	Automatyczne przeliczanie ceny (netto, VAT, brutto)
+	4.	Generowanie profesjonalnego PDF oferty
+	5.	Historia ofert użytkownika z możliwością ich edycji i ponownego pobrania
+	6.	System logowania i ról (admin, użytkownik)
+	7.	Panel administratora do zarządzania opcjami, użytkownikami i cennikami
+
+⸻
+
+🧩 ZAŁĄCZONY PLIK – OPCJE KONFIGURACYJNE
+
+Dołączony jest plik:
+
+📎 pelna_lista_opcji_konfiguratora.csv
+
+Zawiera:
+	•	ID_OPCJI – unikalny identyfikator opcji (np. TYP001)
+	•	KATEGORIA – typ opcji (np. Kolor, Profil, Klamka, Zabezpieczenia)
+	•	NAZWA – etykieta opcji widoczna w UI (np. Antracyt obustronny)
+	•	CENA_NETTO_EUR – dopłata netto w EUR za daną opcję
+
+🎯 Zadanie agenta AI:
+	1.	Załaduj dane z CSV do bazy danych PostgreSQL (tabela options)
+	2.	Stwórz endpoint GET /options/?category= aby frontend mógł dynamicznie pobierać dostępne opcje
+	3.	Uwzględnij ceny opcji podczas kalkulacji ceny pozycji i oferty
+	4.	Wyświetl te opcje w interfejsie formularza konfiguracji
+
+⸻
+
+🧠 TECHNOLOGIE (obowiązkowe)
+
+Frontend:
+	•	React 18 + TypeScript + Vite
+	•	TailwindCSS
+	•	React Hook Form
+	•	Axios
+	•	React Router (jeśli potrzebny)
+	•	Context API lub Zustand (do globalnego stanu)
+
+Backend:
+	•	FastAPI
+	•	PostgreSQL
+	•	SQLAlchemy (ORM)
+	•	Jinja2 + WeasyPrint (do generowania PDF)
+	•	JWT (python-jose)
+	•	Passlib (hashowanie haseł)
+
+⸻
+
+🔐 AUTORYZACJA:
+	•	Rejestracja użytkownika (POST /auth/register) – domyślnie rola użytkownik
+	•	Logowanie (POST /auth/login) – zwraca JWT
+	•	JWT zapisany w localStorage (frontend) i dołączany jako Bearer Token
+	•	Role:
+	•	admin: pełny dostęp do użytkowników, ofert, opcji
+	•	użytkownik: tworzenie i zarządzanie własnymi ofertami
+
+⸻
+
+📄 MODELE BAZY DANYCH:
+	1.	User: id, email, full_name, hashed_password, rola, aktywność
+	2.	Offer: id, user_id, numer, data, klient, suma_netto, suma_vat, suma_brutto
+	3.	OfferItem: id, offer_id, typ, szerokość, wysokość, konfiguracja (JSON), cena_netto
+	4.	Option: id_opcji, kategoria, nazwa, cena_netto
+
+⸻
+
+📋 INTERFEJS UŻYTKOWNIKA:
+	•	Konfigurator pozycji:
+	•	Wprowadzenie wymiarów
+	•	Wybór opcji (profil, okucia, kolor, szyba, próg itd.)
+	•	Dynamiczne ceny z dopłatami
+	•	Dane klienta:
+	•	Nazwa firmy / klienta
+	•	Numer oferty (np. FB/2025/0012)
+	•	Data, uwagi
+	•	Podsumowanie oferty:
+	•	Automatyczna kalkulacja netto, VAT, brutto
+	•	Lista pozycji w tabeli
+	•	Przyciski: Dodaj pozycję, Wygeneruj PDF, Zapisz ofertę
+	•	PDF:
+	•	Automatycznie generowany na backendzie
+	•	Layout profesjonalny – dane klienta, tabela z pozycjami, podsumowanie
+	•	Pobieranie z /offers/{id}/pdf
+
+⸻
+
+📦 ENDPOINTY BACKENDU:
+	•	POST /offers/ – utworzenie nowej oferty
+	•	GET /offers/ – lista ofert użytkownika
+	•	GET /offers/{id} – szczegóły oferty
+	•	GET /offers/{id}/pdf – generowanie i pobieranie PDF
+	•	GET /options/?category= – lista opcji do konfiguratora
+	•	POST /auth/login / register – logowanie, rejestracja
+
+⸻
+
+💾 STRUKTURA PROJEKTU:   /frontend/
+  src/components/
+  src/views/
+  src/services/
+  src/hooks/
+  src/types/
+  src/utils/
+  App.tsx
+  main.tsx
+  index.html
+  tailwind.config.js
+  tsconfig.json
+  package.json
+
+/backend/
+  app/
+    api/
+    models/
+    schemas/
+    services/
+    templates/
+    utils/
+    database.py
+    main.py
+
+/storage/ ← folder PDF.  ✅ EFEKT KOŃCOWY – PO ZAKOŃCZENIU ZADANIA MAM MÓC:
+	1.	Zalogować się jako użytkownik
+	2.	Skonfigurować ofertę składającą się z wielu pozycji
+	3.	Użyć opcji z pelna_lista_opcji_konfiguratora.csv
+	4.	Wprowadzić dane klienta
+	5.	Wygenerować i pobrać PDF z ofertą
+	6.	Admin ma dostęp do wszystkich ofert i użytkowników
+🛠️ Kroki działania agenta AI:
+	1.	Utwórz strukturę projektu frontend + backend
+	2.	Stwórz bazę danych z wymaganymi tabelami
+	3.	Załaduj dane z CSV do tabeli options
+	4.	Zbuduj interfejs konfiguracyjny frontend + API
+	5.	Połącz przeliczanie cen z PDF-em
+	6.	Zabezpiecz API JWT, rozróżnij dostęp admin / użytkownik
+	7.	Stwórz dokumentację README.md
