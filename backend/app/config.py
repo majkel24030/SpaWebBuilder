@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     
     # Paths
     STORAGE_PATH: str = os.getenv("STORAGE_PATH", "/storage")
-    CSV_FILE_PATH: str = os.getenv("CSV_FILE_PATH", "./Rozszerzona_tabela_opcji.csv")
+    CSV_FILE_PATH: str = os.getenv("CSV_FILE_PATH", "/home/runner/workspace/Rozszerzona_tabela_opcji.csv")
 
     # Security
     CORS_ORIGINS: list = ["http://localhost:5000", "http://localhost:8000"]

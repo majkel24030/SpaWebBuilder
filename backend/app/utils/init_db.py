@@ -9,8 +9,11 @@ def init_db(db: Session) -> None:
     """
     Initialize database with options from CSV
     """
+    # Load options from CSV if file exists
+    from app.models.option import Option
+    
     # Check if options already exist
-    if db.query(User).count() == 0:
+    if db.query(Option).count() == 0:
         # Load options from CSV
         csv_file_path = settings.CSV_FILE_PATH
         if os.path.exists(csv_file_path):
