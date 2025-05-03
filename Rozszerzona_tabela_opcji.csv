@@ -1,0 +1,42 @@
+ID_OPCJI,KATEGORIA,NAZWA,CENA_NETTO_EUR
+TYP001,Typ elementu,Okno jednoskrzydłowe,280
+TYP002,Typ elementu,Okno dwuskrzydłowe,390
+TYP003,Typ elementu,Drzwi balkonowe,550
+TYP004,Typ elementu,Drzwi wejściowe,620
+SYS001,System,Salamander BE82,0
+SYS002,System,Brugmann AD,25
+SYS003,System,Veka Softline 82,35
+KOL001,Kolor,Biały z czarną uszczelką,0
+KOL002,Kolor,Antracyt obustronny,45
+KOL003,Kolor,Złoty dąb jednostronny,40
+KOL004,Kolor,Winchester,42
+ZGR001,Zgrzewanie,Zgrzew standardowy,0
+ZGR002,Zgrzewanie,Zgrzew V-Perfect,12
+OKU001,Okucie,Siegenia TITAN,0
+OKU002,Okucie,Roto NT,5
+OKU003,Okucie,Maco Multi-Matic,7
+SZK001,Szklenie,3-szybowe Ug=0.5,40
+SZK002,Szklenie,2-szybowe Ug=1.1,20
+SZK003,Szklenie,Akustyczne Ug=0.7,60
+PROG001,Próg,Alu próg niski,18
+PROG002,Próg,PVC próg standardowy,12
+PROG003,Próg,Bezprogowé (0 mm),25
+KLAM001,Klamka,Aluminiowa biała,9
+KLAM002,Klamka,Plastikowa brązowa,5
+KLAM003,Klamka,Inox z blokadą,15
+USZ001,Uszczelka,Czarna,0
+USZ002,Uszczelka,Szara,2
+ZAS001,Zaślepki,Białe,0
+ZAS002,Zaślepki,Antracytowe,3
+SLU001,Słupek,Słupek standardowy 96 mm,0
+SLU002,Słupek,Słupek szeroki 120 mm,8
+MON001,Montaż,Z kotwami,0
+MON002,Montaż,Bez kotew,0
+ODW001,Odwodnienie,Widoczne z przodu,0
+ODW002,Odwodnienie,Ukryte od spodu,5
+SZY001,Typ szyby,Float,0
+SZY002,Typ szyby,Hartowana,10
+POZ001,Pozycja klamki,Standard,0
+POZ002,Pozycja klamki,Dolna,0
+BEZ001,Zabezpieczenia,Standard,0
+BEZ002,Zabezpieczenia,Wzmocnione RC1,20

@@ -6,7 +6,8 @@ from sqlalchemy.orm import sessionmaker
 from app.config import settings
 
 # Create database engine
-DATABASE_URL = settings.DATABASE_URL
+# Convert PostgresDsn to string for SQLAlchemy
+DATABASE_URL = str(settings.DATABASE_URL)
 
 # Create SQLAlchemy engine
 engine = create_engine(
