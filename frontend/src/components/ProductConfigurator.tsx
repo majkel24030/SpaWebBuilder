@@ -84,7 +84,7 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
         selectedType
       );
       
-      setDimensionError(validation.valid ? null : validation.error);
+      setDimensionError(validation.valid ? null : (validation.error || null));
     }
   };
   

@@ -65,3 +65,11 @@ export interface OfferFilter {
   sort_by?: string;
   sort_direction?: string;
 }
+
+export interface ProductConfig {
+  typ: string;
+  szerokosc: number;
+  wysokosc: number;
+  options: Record<string, string>;
+  price?: number;
+}

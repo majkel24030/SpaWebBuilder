@@ -58,7 +58,7 @@ const OfferForm: React.FC<OfferFormProps> = ({ isEditing = false }) => {
       // Save the offer first if it's not saved yet
       try {
         setIsSaving(true);
-        const savedOffer = await createOffer(currentOffer);
+        const savedOffer = await createOffer(currentOffer!);
         setIsSaving(false);
         setIsGeneratingPdf(true);
         await downloadOfferPDF(savedOffer.id!, savedOffer.numer);
