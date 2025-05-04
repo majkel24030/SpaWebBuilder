@@ -103,17 +103,21 @@ export const downloadOfferPDF = async (id: number, offerNumber: string): Promise
   try {
     console.log('Processing PDF for offer:', id, offerNumber);
     
-    // Get the PDF blob
-    const pdfBlob = await generateOfferPDF(id);
-    console.log('PDF blob received, size:', pdfBlob.size, 'bytes');
+    // Zamiast pobierać blob i tworzyć URL, otwórz bezpośrednio URL do PDF
+    // Używając bezpośredniego URL do endpointu API, korzystamy z nagłówka Authorization
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Nie jesteś zalogowany. Zaloguj się, aby wyświetlić PDF.');
+      return;
+    }
     
-    // Create a URL for the blob
-    const blobUrl = window.URL.createObjectURL(pdfBlob);
-    console.log('Created blob URL:', blobUrl);
+    // Otwórz nową kartę z bezpośrednim URL do PDF
+    // Trzeba przekazać token jako parametr, ponieważ nagłówki nie działają przy window.open
+    const timestamp = new Date().getTime(); // Dodajemy timestamp, aby uniknąć cache
+    const pdfUrl = `/api/offers/${id}/pdf?token=${encodeURIComponent(token)}&t=${timestamp}`;
+    console.log('Opening PDF URL:', pdfUrl);
     
-    // Otwórz PDF w nowej karcie przeglądarki
-    // Użytkownik może go tam zobaczyć i pobrać używając standardowych kontrolek przeglądarki
-    window.open(blobUrl, '_blank');
+    window.open(pdfUrl, '_blank');
   } catch (error) {
     console.error('Error displaying PDF:', error);
     alert('Nie udało się wyświetlić pliku PDF. Spróbuj ponownie później.');

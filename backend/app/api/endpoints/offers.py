@@ -135,15 +135,65 @@ def delete_offer_endpoint(
     
     delete_offer(db=db, offer_id=offer_id)
 
+from fastapi import Depends, HTTPException, status, Query, Response, Security
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from app.services.auth import verify_token
+
+# Dodaj instancję dla obsługi tokena bezpośrednio w parametrach
+oauth2_bearer = HTTPBearer(auto_error=False)
+
 @router.get("/{offer_id}/pdf", response_class=Response)
 def generate_pdf(
     offer_id: int,
+    token: str = Query(None),  # Dodajemy możliwość przesłania tokenu jako parametr
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    credentials: HTTPAuthorizationCredentials = Security(oauth2_bearer),
+    current_user: User = Depends(None)
 ) -> Any:
     """
-    Generate PDF for offer
+    Generate PDF for offer with token as URL parameter option
     """
+    # Logika autentykacji - sprawdź token z parametru lub nagłówka
+    if current_user is None:
+        # Brak użytkownika z domyślnej autentykacji, próbujemy użyć tokenu z parametru lub nagłówka
+        if token:
+            # Użyj tokenu z parametru URL
+            try:
+                user_id = verify_token(token)
+                current_user = db.query(User).filter(User.id == user_id).first()
+                if not current_user:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Invalid authentication credentials"
+                    )
+            except Exception as e:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail=f"Token authentication error: {str(e)}"
+                )
+        elif credentials:
+            # Użyj tokenu z nagłówka Authorization
+            try:
+                user_id = verify_token(credentials.credentials)
+                current_user = db.query(User).filter(User.id == user_id).first()
+                if not current_user:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Invalid authentication credentials"
+                    )
+            except Exception as e:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail=f"Token authentication error: {str(e)}"
+                )
+        else:
+            # Brak tokenu - zwróć błąd autoryzacji
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not authenticated"
+            )
+    
+    # Pobierz ofertę
     offer = check_offer_exists(db, offer_id)
     
     # Check if user is offer owner or admin
@@ -156,8 +206,7 @@ def generate_pdf(
     # Generate PDF
     pdf_content = generate_offer_pdf(db, offer)
     
-    # Return PDF - usuwamy header Content-Disposition: attachment, aby plik był otwierany w przeglądarce
-    # zamiast automatycznie pobierany
+    # Return PDF with inline disposition for browser viewing
     headers = {
         'Content-Disposition': f'inline; filename="Oferta_{offer.numer.replace("/", "_")}.pdf"'
     }

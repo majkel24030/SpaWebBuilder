@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Union
 
 from fastapi import HTTPException, status
-from jose import jwt
+from jose import jwt, JWTError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -42,3 +42,29 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
     print(f"Generated token: {encoded_jwt[:10]}...")
     return encoded_jwt
+
+def verify_token(token: str) -> Union[str, int]:
+    """
+    Verify JWT token and return user_id
+    """
+    try:
+        # Print debugging information
+        print(f"Decoding token: {token[:10]}...")
+        print(f"Using SECRET_KEY: {settings.SECRET_KEY[:5]}...")
+        print(f"Using ALGORITHM: {ALGORITHM}")
+        
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+        print(f"Decoded payload: {payload}")
+        
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token - missing subject"
+            )
+        return int(user_id)
+    except JWTError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid token: {str(e)}"
+        )
