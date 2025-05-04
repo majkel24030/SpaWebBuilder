@@ -51,6 +51,9 @@ def generate_offer_pdf(db: Session, offer: Offer) -> bytes:
             "total_price_net": item.cena_netto * quantity
         })
     
+    # Oblicz całkowitą ilość produktów
+    total_quantity = sum(item["quantity"] for item in items_data)
+    
     # Prepare data for template
     template_data = {
         "offer": {
@@ -60,7 +63,8 @@ def generate_offer_pdf(db: Session, offer: Offer) -> bytes:
             "notes": offer.uwagi,
             "net_total": offer.suma_netto,
             "vat_total": offer.suma_vat,
-            "gross_total": offer.suma_brutto
+            "gross_total": offer.suma_brutto,
+            "total_quantity": total_quantity
         },
         "items": items_data,
         "vat_rate": 23  # 23% VAT
