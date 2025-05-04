@@ -6,99 +6,151 @@
     <title>Oferta {{offer.number}}</title>
     <style>
         @page {
-            margin: 2cm;
-            @top-center {
-                content: "Oferta {{offer.number}}";
-                font-family: Arial, sans-serif;
-                font-size: 10pt;
-                color: #666;
-            }
+            margin: 1.5cm;
             @bottom-center {
                 content: "Strona " counter(page) " z " counter(pages);
                 font-family: Arial, sans-serif;
-                font-size: 10pt;
+                font-size: 9pt;
                 color: #666;
             }
         }
         body {
             font-family: Arial, sans-serif;
-            font-size: 12pt;
-            line-height: 1.6;
+            font-size: 11pt;
+            line-height: 1.4;
             color: #333;
         }
         .header {
-            margin-bottom: 2cm;
+            margin-bottom: 1.5cm;
+            text-align: center;
         }
         .company-info {
-            text-align: right;
+            text-align: center;
             margin-bottom: 1cm;
         }
         .company-name {
-            font-size: 24pt;
+            font-size: 16pt;
             font-weight: bold;
-            color: #2563eb;
-            margin-bottom: 0.5cm;
+            margin-bottom: 0.2cm;
         }
         .company-details {
-            font-size: 10pt;
-            color: #666;
+            font-size: 9pt;
+            color: #333;
+            line-height: 1.3;
         }
-        .offer-details {
-            margin-bottom: 1cm;
+        .offer-header {
+            text-align: right;
+            margin: 1.5cm 0;
+        }
+        .offer-number {
+            font-weight: bold;
+            font-size: 12pt;
+        }
+        .offer-date {
+            margin-top: 0.2cm;
+            font-size: 10pt;
+        }
+        .offer-valid {
+            margin-top: 0.2cm;
+            font-size: 10pt;
+        }
+        .customer-greeting {
+            margin: 1cm 0;
+            line-height: 1.5;
         }
         .offer-title {
-            font-size: 18pt;
+            text-align: center;
             font-weight: bold;
-            margin-bottom: 0.5cm;
-            color: #2563eb;
-            border-bottom: 1px solid #2563eb;
-            padding-bottom: 0.2cm;
+            font-size: 12pt;
+            margin: 1cm 0 0.5cm 0;
         }
-        .offer-info {
-            display: flex;
-            justify-content: space-between;
-        }
-        .customer-info, .offer-info-details {
-            width: 48%;
-        }
-        .info-label {
-            font-weight: bold;
-            margin-right: 0.5cm;
-        }
-        .items-title {
-            font-size: 14pt;
-            font-weight: bold;
-            margin-top: 1cm;
-            margin-bottom: 0.5cm;
-            color: #2563eb;
-        }
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
+        .offer-date-centered {
+            text-align: center;
+            font-size: 10pt;
             margin-bottom: 1cm;
         }
-        .items-table th {
-            background-color: #f3f4f6;
-            padding: 0.3cm;
-            text-align: left;
+        .window-item {
+            margin-bottom: 2cm;
+            page-break-inside: avoid;
+        }
+        .window-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.2cm;
+            margin-bottom: 0.5cm;
+        }
+        .window-details {
+            display: flex;
+            margin-bottom: 0.5cm;
+        }
+        .window-image {
+            width: 30%;
+            padding-right: 1cm;
+        }
+        .window-specs {
+            width: 70%;
+        }
+        .window-title {
             font-weight: bold;
-            border-bottom: 2px solid #ddd;
+            margin-bottom: 0.2cm;
         }
-        .items-table td {
-            padding: 0.3cm;
-            border-bottom: 1px solid #ddd;
+        .specs-section {
+            margin-bottom: 0.3cm;
         }
-        .items-table .item-config {
+        .specs-title {
+            font-weight: bold;
+            margin-bottom: 0.1cm;
+        }
+        .specs-row {
+            display: flex;
+            padding: 0.1cm 0;
+            font-size: 9pt;
+        }
+        .specs-label {
+            width: 45%;
+            padding-right: 0.5cm;
+        }
+        .specs-value {
+            width: 55%;
+        }
+        .accessories-title {
+            font-weight: bold;
+            margin: 0.5cm 0 0.2cm 0;
             font-size: 10pt;
-            color: #666;
         }
-        .price {
+        .accessories-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+        }
+        .accessories-table td {
+            padding: 0.1cm 0.2cm;
+        }
+        .glazing-title {
+            font-weight: bold;
+            margin: 0.5cm 0 0.2cm 0;
+            font-size: 10pt;
+        }
+        .glazing-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+        }
+        .glazing-table td {
+            padding: 0.1cm 0.2cm;
+        }
+        .window-price {
             text-align: right;
             font-weight: bold;
+            margin-top: 0.5cm;
+            border-top: 1px solid #ccc;
+            padding-top: 0.2cm;
         }
         .summary {
+            margin-top: 1.5cm;
             margin-left: auto;
-            width: 40%;
+            width: 50%;
         }
         .summary-table {
             width: 100%;
@@ -115,9 +167,9 @@
             font-weight: bold;
         }
         .total-row {
-            font-size: 14pt;
-            color: #2563eb;
-            border-top: 2px solid #2563eb;
+            font-size: 12pt;
+            font-weight: bold;
+            border-top: 1px solid #000;
         }
         .notes {
             margin-top: 1cm;
@@ -130,9 +182,22 @@
         }
         .footer {
             margin-top: 2cm;
-            font-size: 10pt;
+            font-size: 9pt;
             color: #666;
             text-align: center;
+            border-top: 1px solid #ddd;
+            padding-top: 0.5cm;
+        }
+        .placeholder-image {
+            width: 100%;
+            height: 120px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9pt;
+            color: #666;
+            margin-bottom: 0.5cm;
         }
     </style>
 </head>
@@ -141,61 +206,114 @@
         <div class="company-info">
             <div class="company-name">WindoorConfig</div>
             <div class="company-details">
-                System konfiguracji ofert stolarki okiennej i drzwiowej<br>
-                ul. Przykładowa 123, 00-000 Warszawa<br>
-                Tel: +48 123 456 789 | Email: kontakt@windoorconfig.pl<br>
-                NIP: 123-456-78-90 | REGON: 123456789
-            </div>
-        </div>
-        
-        <div class="offer-details">
-            <div class="offer-title">Oferta numer: {{offer.number}}</div>
-            <div class="offer-info">
-                <div class="customer-info">
-                    <p><span class="info-label">Klient:</span> {{offer.customer}}</p>
-                    <p><span class="info-label">Data oferty:</span> {{offer.date}}</p>
-                </div>
-                <div class="offer-info-details">
-                    <p><span class="info-label">Ważność oferty:</span> 30 dni</p>
-                    <p><span class="info-label">Termin realizacji:</span> 4-6 tygodni</p>
-                </div>
+                ul. Przykładowa 123<br>
+                00-000 Warszawa<br>
+                Telefon: +48 123 456 789<br>
+                E-Mail: kontakt@windoorconfig.pl
             </div>
         </div>
     </div>
     
-    <div class="items-title">Pozycje oferty</div>
-    <table class="items-table">
-        <thead>
-            <tr>
-                <th>Lp.</th>
-                <th>Produkt</th>
-                <th>Wymiary (mm)</th>
-                <th>Konfiguracja</th>
-                <th>Ilość</th>
-                <th>Cena netto (EUR)</th>
-                <th>Razem (EUR)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-            <tr>
-                <td>{{loop.index}}</td>
-                <td>{{item.type_name}}</td>
-                <td>{{item.width}} × {{item.height}}</td>
-                <td>
-                    <div class="item-config">
-                        {% for category, value in item.configuration.items() %}
-                        <div>{{category}}: {{value}}</div>
-                        {% endfor %}
+    <div class="offer-header">
+        <div class="offer-number">Oferta-Nr: {{offer.number}}</div>
+        <div class="offer-date">Data: {{offer.date}}</div>
+        <div class="offer-valid">Ważność: 30 dni</div>
+    </div>
+    
+    <div class="customer-greeting">
+        <p>Szanowny Kliencie {{offer.customer}},</p>
+        <p>dziękujemy za zapytanie. Z przyjemnością przedstawiamy Państwu naszą ofertę:</p>
+        <p>Uwaga: Prosimy o dokładne sprawdzenie każdej pozycji.</p>
+    </div>
+    
+    <div class="offer-title">Oferta {{offer.number}}</div>
+    <div class="offer-date-centered">{{offer.date}}</div>
+    
+    {% for item in items %}
+    <div class="window-item">
+        <div class="window-header">
+            <div><strong>Okno {{loop.index}}</strong></div>
+            <div><strong>Ilość: {{item.quantity}}</strong></div>
+            <div><strong>System: {{item.type_name}}</strong></div>
+            <div><strong>Kolor: {% if 'Kolor' in item.configuration %}{{item.configuration['Kolor']}}{% else %}biały{% endif %}</strong></div>
+        </div>
+        
+        <div class="window-details">
+            <div class="window-image">
+                <div class="placeholder-image">Widok wewnętrzny</div>
+                <div style="font-size: 9pt; text-align: center;">Widok wewnętrzny</div>
+            </div>
+            
+            <div class="window-specs">
+                <div class="specs-section">
+                    <div class="specs-title">Rama</div>
+                    {% if 'Rama' in item.configuration %}
+                    <div class="specs-row">
+                        <div class="specs-label">Typ ramy</div>
+                        <div class="specs-value">{{item.configuration['Rama']}}</div>
                     </div>
-                </td>
-                <td class="text-center">{{item.quantity}}</td>
-                <td class="price">{{"{:.2f}".format(item.price_net)}}</td>
-                <td class="price">{{"{:.2f}".format(item.total_price_net)}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    {% endif %}
+                    <div class="specs-row">
+                        <div class="specs-label">Konfiguracja</div>
+                        <div class="specs-value">Zgodnie z zamówieniem</div>
+                    </div>
+                    <div class="specs-row">
+                        <div class="specs-label">Wymiary</div>
+                        <div class="specs-value">{{item.width}} mm × {{item.height}} mm</div>
+                    </div>
+                    {% if 'Profil' in item.configuration %}
+                    <div class="specs-row">
+                        <div class="specs-label">Profil</div>
+                        <div class="specs-value">{{item.configuration['Profil']}}</div>
+                    </div>
+                    {% endif %}
+                    {% if 'Uszczelki' in item.configuration %}
+                    <div class="specs-row">
+                        <div class="specs-label">Uszczelki</div>
+                        <div class="specs-value">{{item.configuration['Uszczelki']}}</div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if 'Szklenie' in item.configuration %}
+                <div class="specs-section">
+                    <div class="specs-title">Szklenie</div>
+                    <div class="specs-row">
+                        <div class="specs-label">Typ szklenia</div>
+                        <div class="specs-value">{{item.configuration['Szklenie']}}</div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if 'Okucia' in item.configuration %}
+                <div class="specs-section">
+                    <div class="specs-title">Okucia</div>
+                    <div class="specs-row">
+                        <div class="specs-label">Typ okuć</div>
+                        <div class="specs-value">{{item.configuration['Okucia']}}</div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="specs-section">
+                    <div class="specs-title">Dodatkowe informacje</div>
+                    {% for category, value in item.configuration.items() %}
+                    {% if category not in ['Rama', 'Szklenie', 'Okucia', 'Profil', 'Uszczelki', 'Kolor'] %}
+                    <div class="specs-row">
+                        <div class="specs-label">{{category}}</div>
+                        <div class="specs-value">{{value}}</div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <div class="window-price">
+                    Cena okna: {{"{:.2f}".format(item.total_price_net)}} EUR
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
     
     <div class="summary">
         <table class="summary-table">
@@ -224,6 +342,7 @@
     <div class="footer">
         <p>Dziękujemy za skorzystanie z naszej oferty!</p>
         <p>Wszystkie ceny podane są w EUR. Oferta jest ważna przez 30 dni od daty wystawienia.</p>
+        <p>WindoorConfig - profesjonalne rozwiązania stolarki okiennej i drzwiowej</p>
     </div>
 </body>
 </html>
