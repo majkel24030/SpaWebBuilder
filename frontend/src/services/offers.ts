@@ -101,23 +101,26 @@ export const generateOfferPDF = async (id: number): Promise<Blob> => {
  */
 export const downloadOfferPDF = async (id: number, offerNumber: string): Promise<void> => {
   try {
-    console.log('Processing PDF for offer:', id, offerNumber);
+    console.log('Opening PDF for offer:', id, offerNumber);
     
-    // Get the PDF blob
-    const pdfBlob = await generateOfferPDF(id);
-    console.log('PDF blob received, size:', pdfBlob.size, 'bytes');
-    
-    // Create a URL for the blob
-    const blobUrl = window.URL.createObjectURL(pdfBlob);
-    console.log('Created blob URL:', blobUrl);
-    
-    // Otwórz PDF w nowej karcie przeglądarki
-    const newWindow = window.open(blobUrl, '_blank');
-    
-    // Obsługa błędu, gdy przeglądarka blokuje otwarcie nowego okna
-    if (!newWindow) {
-      alert('Przeglądarka zablokowała otwarcie nowego okna. Proszę zezwolić na wyskakujące okna dla tej strony.');
+    // Pobierz token uwierzytelniający
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Nie jesteś zalogowany. Zaloguj się, aby wyświetlić PDF.');
+      return;
     }
+    
+    // Otwórz PDF bezpośrednio w nowej karcie
+    // Używamy bezpośredniego podejścia zamiast pobierania jako blob
+    const pdfUrl = `/api/offers/${id}/pdf`;
+    
+    // Utworzenie elementu <a> do otwarcia w nowej karcie
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.click();
+    
   } catch (error) {
     console.error('Error displaying PDF:', error);
     alert('Nie udało się wyświetlić pliku PDF. Spróbuj ponownie później.');

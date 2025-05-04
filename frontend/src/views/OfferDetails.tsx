@@ -65,12 +65,23 @@ const OfferDetails: React.FC = () => {
     }
   };
   
-  const handleGeneratePdf = async () => {
+  const handleGeneratePdf = () => {
     if (!id || !offer) return;
     
     try {
       setIsGeneratingPdf(true);
-      await downloadOfferPDF(parseInt(id), offer.numer);
+      
+      // Zamiast używać funkcji z serwisu, przekierowujemy bezpośrednio do odpowiedniego URL
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Nie jesteś zalogowany. Zaloguj się, aby wyświetlić PDF.');
+        return;
+      }
+      
+      // Otwórz PDF w nowej karcie - używamy bezpośredniego URL z tokenem w parametrze zapytania
+      const pdfUrl = `/api/offers/${id}/pdf?token=${encodeURIComponent(token)}`;
+      window.open(pdfUrl, '_blank');
+      
     } catch (err) {
       console.error('Error generating PDF:', err);
       setError(err instanceof Error ? err.message : 'Nie udało się wygenerować PDF');
