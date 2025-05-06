@@ -20,6 +20,7 @@ class Offer(Base):
     # Relationships
     user = relationship("User", back_populates="offers")
     items = relationship("OfferItem", back_populates="offer", cascade="all, delete-orphan")
+    # Invoices will be defined later - forward declaration to avoid circular imports
 
     def __repr__(self):
         return f"<Offer {self.numer} for {self.klient}>"

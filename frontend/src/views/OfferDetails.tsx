@@ -3,8 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useRequireAuth } from '../hooks/useAuth';
 import { useOfferStore } from '../store/offerStore';
 import { getOfferById, downloadOfferPDF, deleteOffer } from '../services/offers';
+import { getInvoicesForOffer } from '../services/invoices';
 import CustomerInfo from '../components/CustomerInfo';
 import OfferSummary from '../components/OfferSummary';
+import InvoiceForm from '../components/InvoiceForm';
 import { Offer } from '../types';
 
 const OfferDetails: React.FC = () => {
@@ -18,6 +20,8 @@ const OfferDetails: React.FC = () => {
   const [offer, setOfferState] = useState<Offer | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
+  const [hasInvoices, setHasInvoices] = useState(false);
   
   useEffect(() => {
     const fetchOffer = async () => {
@@ -29,6 +33,15 @@ const OfferDetails: React.FC = () => {
         setOfferState(fetchedOffer);
         setOffer(fetchedOffer); // Set in global state for components
         setError(null);
+        
+        // Sprawdź czy oferta ma faktury
+        try {
+          const invoices = await getInvoicesForOffer(parseInt(id));
+          setHasInvoices(invoices.length > 0);
+        } catch (err) {
+          console.error('Error fetching invoices:', err);
+          // Nie ustawiamy błędu, to nie jest krytyczne
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch offer details');
       } finally {
@@ -87,6 +100,24 @@ const OfferDetails: React.FC = () => {
       setError(err instanceof Error ? err.message : 'Nie udało się wygenerować PDF');
     } finally {
       setIsGeneratingPdf(false);
+    }
+  };
+  
+  const handleOpenInvoiceForm = () => {
+    setShowInvoiceForm(true);
+  };
+  
+  const handleInvoiceSuccess = () => {
+    setShowInvoiceForm(false);
+    // Odśwież status faktur
+    if (id) {
+      getInvoicesForOffer(parseInt(id))
+        .then(invoices => {
+          setHasInvoices(invoices.length > 0);
+        })
+        .catch(err => {
+          console.error('Error refreshing invoices:', err);
+        });
     }
   };
   
@@ -152,6 +183,12 @@ const OfferDetails: React.FC = () => {
             {isGeneratingPdf ? 'Generowanie...' : 'Generuj PDF'}
           </button>
           <button
+            onClick={handleOpenInvoiceForm}
+            className="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+          >
+            Generuj fakturę
+          </button>
+          <button
             onClick={handleDelete}
             className="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700"
           >
@@ -162,6 +199,33 @@ const OfferDetails: React.FC = () => {
       
       <CustomerInfo readOnly />
       <OfferSummary readOnly />
+      
+      {/* Informacja o wystawionych fakturach */}
+      {hasInvoices && (
+        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
+          <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-green-700">
+              Dla tej oferty wygenerowano już fakturę. Możesz wygenerować dodatkową fakturę w razie potrzeby.
+            </p>
+          </div>
+        </div>
+      )}
+      
+      {/* Formularz faktury */}
+      {showInvoiceForm && offer && offer.id && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 overflow-y-auto">
+          <div className="max-w-2xl w-full m-4">
+            <InvoiceForm 
+              offer={{ ...offer, id: offer.id }}
+              onSuccess={handleInvoiceSuccess}
+              onCancel={() => setShowInvoiceForm(false)}
+            />
+          </div>
+        </div>
+      )}
       
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
