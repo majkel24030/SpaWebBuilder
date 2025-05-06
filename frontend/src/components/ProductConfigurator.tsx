@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useOfferStore } from '../store/offerStore';
 import { useOptions, useOptionsByCategory, calculateOptionsPrice } from '../hooks/useOptions';
-import { Option } from '../types';
+import { Option, ProductConfig } from '../types';
 import { validateDimensions } from '../utils/validation';
 import OptionSelector from './OptionSelector';
 import { roundPrice } from '../utils/price';
@@ -19,7 +19,6 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
-  const [quantityInputValue, setQuantityInputValue] = useState<string>('1');
   const [dimensionError, setDimensionError] = useState<string | null>(null);
   const [netPrice, setNetPrice] = useState<number>(0);
   
@@ -49,7 +48,6 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
       setHeight(currentProduct.wysokosc || 0);
       if (currentProduct.ilosc) {
         setQuantity(currentProduct.ilosc);
-        setQuantityInputValue(currentProduct.ilosc.toString());
       }
       console.log("Synchronizacja stanu z produktem:", currentProduct);
     }
@@ -218,29 +216,26 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
             Ilość
           </label>
           <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            value={quantityInputValue}
+            type="number"
+            value={quantity || ''}
             onChange={(e) => {
-              const inputValue = e.target.value;
-              // Akceptuj tylko cyfry lub pusty ciąg
-              if (inputValue === '' || /^\d*$/.test(inputValue)) {
-                setQuantityInputValue(inputValue);
-                
-                // Pozwól na puste pole jako stan przejściowy
-                if (inputValue === '') {
-                  setQuantity(0);
-                  updateProductConfig('ilosc', 1); // Domyślna wartość w store
-                  return;
-                }
-                
-                const value = parseInt(inputValue, 10);
+              // Pozwól na puste pole tymczasowo
+              if (e.target.value === '') {
+                setQuantity(0);
+                // Nie aktualizujemy jeszcze store
+              } else {
+                const value = parseInt(e.target.value, 10);
                 if (!isNaN(value)) {
                   setQuantity(value);
-                  // Aktualizuj wartość w store
-                  updateProductConfig('ilosc', value > 0 ? value : 1);
+                  updateProductConfig('ilosc', Math.max(1, value));
                 }
+              }
+            }}
+            onBlur={() => {
+              // Przy utracie fokusu upewnij się, że wartość w store jest co najmniej 1
+              if (quantity < 1) {
+                setQuantity(1);
+                updateProductConfig('ilosc', 1);
               }
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
