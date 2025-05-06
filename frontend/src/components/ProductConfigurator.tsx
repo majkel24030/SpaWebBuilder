@@ -135,10 +135,11 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
       return;
     }
     
-    // Upewnij się, że ilość jest zapisana w konfiguracji produktu
-    // Jeśli ilość jest undefined lub mniejsza niż 1, ustawmy domyślnie 1 przy zapisie
-    const finalQuantity = (quantity === undefined || quantity < 1) ? 1 : quantity;
-    updateProductConfig('ilosc', finalQuantity);
+    // Pozostawiamy undefined jeśli pole było puste
+    if (quantity !== undefined) {
+      updateProductConfig('ilosc', quantity);
+    }
+    
     addProductToOffer(netPrice);
     onSave();
   };
