@@ -318,6 +318,8 @@
             margin-left: auto;
             border-collapse: collapse;
             margin-top: 1cm;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         .summary-price-table td {
             padding: 0.3cm;
@@ -342,6 +344,8 @@
             margin-top: 1cm;
             border-top: 1px solid #ddd;
             padding-top: 0.5cm;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         .notes-title {
             font-weight: bold;
@@ -354,6 +358,8 @@
             text-align: center;
             border-top: 1px solid #ddd;
             padding-top: 0.5cm;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         .system-signature {
             text-align: center;
@@ -589,7 +595,7 @@
                 </tfoot>
             </table>
             
-            <div style="margin-top: 1cm;">
+            <div style="margin-top: 1cm; page-break-inside: avoid; break-inside: avoid;">
                 <p><strong>Szczegółowe podsumowanie słowne:</strong></p>
                 {% set total_quantity = 0 %}
                 {% for item in items %}
