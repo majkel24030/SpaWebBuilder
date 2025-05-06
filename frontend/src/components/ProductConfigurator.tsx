@@ -218,36 +218,31 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
             Ilość
           </label>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={quantityInputValue}
             onChange={(e) => {
               const inputValue = e.target.value;
-              setQuantityInputValue(inputValue);
-              
-              // Pozwól na puste pole jako stan przejściowy
-              if (inputValue === '') {
-                setQuantity(0);
-                return;
-              }
-              
-              const value = parseInt(inputValue, 10);
-              if (!isNaN(value)) {
-                setQuantity(value);
-                // Aktualizuj wartość w store tylko jeśli jest prawidłowa
-                if (value > 0) {
-                  updateProductConfig('ilosc', value);
+              // Akceptuj tylko cyfry lub pusty ciąg
+              if (inputValue === '' || /^\d*$/.test(inputValue)) {
+                setQuantityInputValue(inputValue);
+                
+                // Pozwól na puste pole jako stan przejściowy
+                if (inputValue === '') {
+                  setQuantity(0);
+                  updateProductConfig('ilosc', 1); // Domyślna wartość w store
+                  return;
+                }
+                
+                const value = parseInt(inputValue, 10);
+                if (!isNaN(value)) {
+                  setQuantity(value);
+                  // Aktualizuj wartość w store
+                  updateProductConfig('ilosc', value > 0 ? value : 1);
                 }
               }
             }}
-            onBlur={() => {
-              // Podczas utraty fokusu, upewnij się, że wartość jest poprawna
-              if (quantity <= 0) {
-                setQuantity(1);
-                setQuantityInputValue('1');
-                updateProductConfig('ilosc', 1);
-              }
-            }}
-            min="1"
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
