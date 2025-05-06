@@ -131,12 +131,14 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
   };
   
   const handleSave = () => {
-    if (!selectedType || width <= 0 || height <= 0 || dimensionError || !quantity || quantity < 1) {
+    if (!selectedType || width <= 0 || height <= 0 || dimensionError) {
       return;
     }
     
     // Upewnij się, że ilość jest zapisana w konfiguracji produktu
-    updateProductConfig('ilosc', quantity);
+    // Jeśli ilość jest undefined lub mniejsza niż 1, ustawmy domyślnie 1 przy zapisie
+    const finalQuantity = (quantity === undefined || quantity < 1) ? 1 : quantity;
+    updateProductConfig('ilosc', finalQuantity);
     addProductToOffer(netPrice);
     onSave();
   };
@@ -218,26 +220,24 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
           </label>
           <input
             type="number"
-            value={quantity || ''}
+            value={quantity === undefined ? '' : quantity}
+            placeholder="np. 1"
             onChange={(e) => {
-              // Pozwól na puste pole tymczasowo
+              // Pozwól na puste pole
               if (e.target.value === '') {
-                setQuantity(0);
-                // Nie aktualizujemy jeszcze store
+                setQuantity(undefined);
+                // Nie aktualizujemy store przy pustym polu - dopiero przy zapisie
               } else {
                 const value = parseInt(e.target.value, 10);
                 if (!isNaN(value)) {
                   setQuantity(value);
-                  updateProductConfig('ilosc', Math.max(1, value));
+                  updateProductConfig('ilosc', value);
                 }
               }
             }}
             onBlur={() => {
-              // Przy utracie fokusu upewnij się, że wartość w store jest co najmniej 1
-              if (!quantity || quantity < 1) {
-                setQuantity(1);
-                updateProductConfig('ilosc', 1);
-              }
+              // Przy zapisie formularza będzie walidacja - tutaj nie wymuszamy
+              // żadnej wartości minimalnej podczas edycji
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
@@ -282,9 +282,9 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
           <button
             type="button"
             onClick={handleSave}
-            disabled={!selectedType || width <= 0 || height <= 0 || !!dimensionError || !quantity || quantity < 1}
+            disabled={!selectedType || width <= 0 || height <= 0 || !!dimensionError}
             className={`px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white ${
-              !selectedType || width <= 0 || height <= 0 || !!dimensionError || !quantity || quantity < 1
+              !selectedType || width <= 0 || height <= 0 || !!dimensionError
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
             }`}
