@@ -432,9 +432,7 @@
                     }
                 </style>
                 <div class="multi-image-grid">
-                    {% set max_images = 4 %}
-                    {% set show_images = item.ilosc if item.ilosc <= max_images else max_images %}
-                    {% for i in range(0, show_images, 2) %}
+                    {% for i in range(0, item.ilosc, 2) %}
                     <div class="multi-image-row">
                         <!-- Pierwsza komórka w wierszu -->
                         <div class="multi-image-cell">
@@ -456,7 +454,7 @@
                         </div>
                         
                         <!-- Druga komórka w wierszu (jeśli istnieje) -->
-                        {% if i+1 < show_images %}
+                        {% if i+1 < item.ilosc %}
                         <div class="multi-image-cell">
                             {% set aspect_ratio = item.szerokosc / item.wysokosc %}
                             {% set base_width = 110 %}
@@ -478,9 +476,6 @@
                     </div>
                     {% endfor %}
                 </div>
-                {% if item.ilosc > max_images %}
-                <div style="font-size: 8pt; text-align: center;">+ {{item.ilosc - max_images}} kolejnych sztuk</div>
-                {% endif %}
                 {% else %}
                 {% set aspect_ratio = item.szerokosc / item.wysokosc %}
                 {% set base_width = 220 %}

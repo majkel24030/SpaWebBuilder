@@ -36,7 +36,7 @@ def create_offer(db: Session, offer_in: OfferCreate, user_id: int) -> Offer:
             wysokosc=item_data.wysokosc,
             konfiguracja=item_data.konfiguracja,
             cena_netto=item_data.cena_netto,
-            ilosc=item_data.ilosc if hasattr(item_data, 'ilosc') else 1
+            ilosc=item_data.ilosc if item_data.ilosc is not None else 1
         )
         db.add(offer_item)
     
@@ -121,7 +121,7 @@ def update_offer(db: Session, offer: Offer, offer_in: OfferUpdate) -> Offer:
                 wysokosc=item_data.wysokosc,
                 konfiguracja=item_data.konfiguracja,
                 cena_netto=item_data.cena_netto,
-                ilosc=item_data.ilosc if hasattr(item_data, 'ilosc') else 1
+                ilosc=item_data.ilosc if item_data.ilosc is not None else 1
             )
             db.add(offer_item)
     

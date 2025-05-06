@@ -18,7 +18,7 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
   const [selectedType, setSelectedType] = useState<string>('');
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number | undefined>(undefined);
   const [dimensionError, setDimensionError] = useState<string | null>(null);
   const [netPrice, setNetPrice] = useState<number>(0);
   
@@ -46,9 +46,8 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
       setSelectedType(currentProduct.typ || '');
       setWidth(currentProduct.szerokosc || 0);
       setHeight(currentProduct.wysokosc || 0);
-      if (currentProduct.ilosc) {
-        setQuantity(currentProduct.ilosc);
-      }
+      // Jeśli ilosc jest zdefiniowane, ustaw ją, w przeciwnym razie pozostaw puste pole (undefined)
+      setQuantity(currentProduct.ilosc);
       console.log("Synchronizacja stanu z produktem:", currentProduct);
     }
   }, [currentProduct]);
@@ -132,10 +131,12 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
   };
   
   const handleSave = () => {
-    if (!selectedType || width <= 0 || height <= 0 || dimensionError) {
+    if (!selectedType || width <= 0 || height <= 0 || dimensionError || !quantity || quantity < 1) {
       return;
     }
     
+    // Upewnij się, że ilość jest zapisana w konfiguracji produktu
+    updateProductConfig('ilosc', quantity);
     addProductToOffer(netPrice);
     onSave();
   };
@@ -233,7 +234,7 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
             }}
             onBlur={() => {
               // Przy utracie fokusu upewnij się, że wartość w store jest co najmniej 1
-              if (quantity < 1) {
+              if (!quantity || quantity < 1) {
                 setQuantity(1);
                 updateProductConfig('ilosc', 1);
               }
@@ -281,9 +282,9 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
           <button
             type="button"
             onClick={handleSave}
-            disabled={!selectedType || width <= 0 || height <= 0 || !!dimensionError}
+            disabled={!selectedType || width <= 0 || height <= 0 || !!dimensionError || !quantity || quantity < 1}
             className={`px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white ${
-              !selectedType || width <= 0 || height <= 0 || !!dimensionError
+              !selectedType || width <= 0 || height <= 0 || !!dimensionError || !quantity || quantity < 1
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
             }`}

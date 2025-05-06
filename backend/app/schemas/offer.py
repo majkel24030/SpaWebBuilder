@@ -8,12 +8,12 @@ class OfferItemBase(BaseModel):
     wysokosc: int = Field(..., ge=400, le=3000, description="Height in millimeters")
     konfiguracja: Dict[str, str] = Field(default_factory=dict, description="Configuration options by category")
     cena_netto: float = Field(..., ge=0, description="Net price")
-    ilosc: int = Field(1, ge=1, description="Quantity of windows of this type")
+    ilosc: Optional[int] = Field(None, ge=1, description="Quantity of windows of this type")
 
 class OfferItemCreate(OfferItemBase):
     pass
 
-class OfferItemUpdate(OfferItemBase):
+class OfferItemUpdate(BaseModel):
     typ: Optional[str] = None
     szerokosc: Optional[int] = None
     wysokosc: Optional[int] = None
