@@ -193,11 +193,7 @@ export const useOfferStore = create<OfferState>()((set, get) => ({
     if (!currentOffer) return;
     
     const suma_netto = currentOffer.items.reduce(
-      (sum, item) => {
-        // Jeśli ilość nie jest zdefiniowana, traktujemy jako 1
-        const quantity = typeof item.ilosc === 'number' ? item.ilosc : 1;
-        return sum + (item.cena_netto * quantity);
-      }, 
+      (sum, item) => sum + (item.cena_netto * (item.ilosc ?? 1)), 
       0
     );
     
