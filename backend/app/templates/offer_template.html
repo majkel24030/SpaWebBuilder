@@ -410,26 +410,71 @@
         <div class="window-details">
             <div class="window-image">
                 {% if item.ilosc > 1 %}
-                <div class="multi-image-container">
+                <style>
+                    .multi-image-grid {
+                        display: block;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                        margin-bottom: 1cm;
+                    }
+                    .multi-image-row {
+                        clear: both;
+                        margin-bottom: 1.5cm;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+                    .multi-image-cell {
+                        display: inline-block;
+                        width: 45%;
+                        margin-right: 5%;
+                        margin-bottom: 1.5cm;
+                        vertical-align: top;
+                    }
+                </style>
+                <div class="multi-image-grid">
                     {% set max_images = 4 %}
                     {% set show_images = item.ilosc if item.ilosc <= max_images else max_images %}
-                    {% for i in range(show_images) %}
-                    <div class="multi-image-item" style="margin-bottom: 1.2cm; clear: both;">
-                        {% set aspect_ratio = item.szerokosc / item.wysokosc %}
-                        {% set base_width = 140 %}
-                        {% set width = base_width %}
-                        {% set height = base_width / aspect_ratio %}
-                        <div class="placeholder-image" style="height: {{ height }}px;">
-                            <div class="window-drawing" style="width: {{ width }}px; height: {{ height }}px;">
-                                <svg width="{{ width }}" height="{{ height }}" viewBox="0 0 {{ width }} {{ height }}" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="0" y="0" width="{{ width }}" height="{{ height }}" fill="#f9f9f9" stroke="#333" stroke-width="2"/>
-                                    <line x1="0" y1="0" x2="{{ width }}" y2="{{ height }}" stroke="#333" stroke-width="1" stroke-dasharray="4"/>
-                                    <line x1="{{ width }}" y1="0" x2="0" y2="{{ height }}" stroke="#333" stroke-width="1" stroke-dasharray="4"/>
-                                </svg>
+                    {% for i in range(0, show_images, 2) %}
+                    <div class="multi-image-row">
+                        <!-- Pierwsza komórka w wierszu -->
+                        <div class="multi-image-cell">
+                            {% set aspect_ratio = item.szerokosc / item.wysokosc %}
+                            {% set base_width = 110 %}
+                            {% set width = base_width %}
+                            {% set height = base_width / aspect_ratio %}
+                            <div class="placeholder-image" style="height: {{ height }}px;">
+                                <div class="window-drawing" style="width: {{ width }}px; height: {{ height }}px;">
+                                    <svg width="{{ width }}" height="{{ height }}" viewBox="0 0 {{ width }} {{ height }}" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="0" y="0" width="{{ width }}" height="{{ height }}" fill="#f9f9f9" stroke="#333" stroke-width="2"/>
+                                        <line x1="0" y1="0" x2="{{ width }}" y2="{{ height }}" stroke="#333" stroke-width="1" stroke-dasharray="4"/>
+                                        <line x1="{{ width }}" y1="0" x2="0" y2="{{ height }}" stroke="#333" stroke-width="1" stroke-dasharray="4"/>
+                                    </svg>
+                                </div>
                             </div>
+                            <div class="window-dimensions">{{item.szerokosc}} × {{item.wysokosc}} mm</div>
+                            <div style="font-size: 8pt; text-align: center;">Sztuka {{i+1}}</div>
                         </div>
-                        <div class="window-dimensions">{{item.szerokosc}} × {{item.wysokosc}} mm</div>
-                        <div style="font-size: 8pt; text-align: center;">Sztuka {{i+1}}</div>
+                        
+                        <!-- Druga komórka w wierszu (jeśli istnieje) -->
+                        {% if i+1 < show_images %}
+                        <div class="multi-image-cell">
+                            {% set aspect_ratio = item.szerokosc / item.wysokosc %}
+                            {% set base_width = 110 %}
+                            {% set width = base_width %}
+                            {% set height = base_width / aspect_ratio %}
+                            <div class="placeholder-image" style="height: {{ height }}px;">
+                                <div class="window-drawing" style="width: {{ width }}px; height: {{ height }}px;">
+                                    <svg width="{{ width }}" height="{{ height }}" viewBox="0 0 {{ width }} {{ height }}" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="0" y="0" width="{{ width }}" height="{{ height }}" fill="#f9f9f9" stroke="#333" stroke-width="2"/>
+                                        <line x1="0" y1="0" x2="{{ width }}" y2="{{ height }}" stroke="#333" stroke-width="1" stroke-dasharray="4"/>
+                                        <line x1="{{ width }}" y1="0" x2="0" y2="{{ height }}" stroke="#333" stroke-width="1" stroke-dasharray="4"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="window-dimensions">{{item.szerokosc}} × {{item.wysokosc}} mm</div>
+                            <div style="font-size: 8pt; text-align: center;">Sztuka {{i+2}}</div>
+                        </div>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>

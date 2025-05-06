@@ -19,6 +19,7 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
+  const [quantityInputValue, setQuantityInputValue] = useState<string>('1');
   const [dimensionError, setDimensionError] = useState<string | null>(null);
   const [netPrice, setNetPrice] = useState<number>(0);
   
@@ -46,6 +47,10 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
       setSelectedType(currentProduct.typ || '');
       setWidth(currentProduct.szerokosc || 0);
       setHeight(currentProduct.wysokosc || 0);
+      if (currentProduct.ilosc) {
+        setQuantity(currentProduct.ilosc);
+        setQuantityInputValue(currentProduct.ilosc.toString());
+      }
       console.log("Synchronizacja stanu z produktem:", currentProduct);
     }
   }, [currentProduct]);
@@ -214,9 +219,11 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
           </label>
           <input
             type="number"
-            value={quantity === 0 ? '' : quantity}
+            value={quantityInputValue}
             onChange={(e) => {
               const inputValue = e.target.value;
+              setQuantityInputValue(inputValue);
+              
               // Pozwól na puste pole jako stan przejściowy
               if (inputValue === '') {
                 setQuantity(0);
@@ -236,6 +243,7 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
               // Podczas utraty fokusu, upewnij się, że wartość jest poprawna
               if (quantity <= 0) {
                 setQuantity(1);
+                setQuantityInputValue('1');
                 updateProductConfig('ilosc', 1);
               }
             }}
