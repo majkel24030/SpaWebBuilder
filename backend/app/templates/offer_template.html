@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oferta {{offer.number}}</title>
+    <title>Oferta {{offer.numer}}</title>
     <style>
         @page {
             margin: 1.5cm;
@@ -363,35 +363,35 @@
     </div>
     
     <div class="offer-header">
-        <div class="offer-number">Oferta-Nr: {{offer.number}}</div>
-        <div class="offer-date">Data: {{offer.date}}</div>
+        <div class="offer-number">Oferta-Nr: {{offer.numer}}</div>
+        <div class="offer-date">Data: {{offer.data}}</div>
         <div class="offer-valid">Ważność: 30 dni</div>
     </div>
     
     <div class="customer-greeting">
-        <p><strong>Szanowny Kliencie {{offer.customer}},</strong></p>
+        <p><strong>Szanowny Kliencie {{offer.klient}},</strong></p>
         <p>dziękujemy za zapytanie. Z przyjemnością przedstawiamy Państwu naszą ofertę:</p>
         <p>Uwaga: Prosimy o dokładne sprawdzenie każdej pozycji.</p>
     </div>
     
-    <div class="offer-title">Oferta {{offer.number}}</div>
-    <div class="offer-date-centered">{{offer.date}}</div>
+    <div class="offer-title">Oferta {{offer.numer}}</div>
+    <div class="offer-date-centered">{{offer.data}}</div>
     
     {% for item in items %}
     <div class="window-item">
         <div class="window-header">
             <div><strong>Okno {{loop.index}}</strong></div>
-            <div><strong>Ilość: {{item.quantity}}</strong></div>
-            <div><strong>System: {{item.type_name}}</strong></div>
-            <div><strong>Kolor: {% if 'Kolor' in item.configuration %}{{item.configuration['Kolor']}}{% else %}biały{% endif %}</strong></div>
+            <div><strong>Ilość: {{item.ilosc}}</strong></div>
+            <div><strong>System: {{item.typ}}</strong></div>
+            <div><strong>Kolor: {% if 'Kolor' in item.konfiguracja %}{{item.konfiguracja['Kolor']}}{% else %}biały{% endif %}</strong></div>
         </div>
         
         <div class="window-details">
             <div class="window-image">
-                {% if item.quantity > 1 %}
+                {% if item.ilosc > 1 %}
                 <div class="multi-image-container">
                     {% set max_images = 4 %}
-                    {% set show_images = item.quantity if item.quantity <= max_images else max_images %}
+                    {% set show_images = item.ilosc if item.ilosc <= max_images else max_images %}
                     {% for i in range(show_images) %}
                     <div class="multi-image-item">
                         <div class="placeholder-image">Widok wewnętrzny</div>
@@ -399,8 +399,8 @@
                     </div>
                     {% endfor %}
                 </div>
-                {% if item.quantity > max_images %}
-                <div style="font-size: 8pt; text-align: center;">+ {{item.quantity - max_images}} kolejnych sztuk</div>
+                {% if item.ilosc > max_images %}
+                <div style="font-size: 8pt; text-align: center;">+ {{item.ilosc - max_images}} kolejnych sztuk</div>
                 {% endif %}
                 {% else %}
                 <div class="placeholder-image">Widok wewnętrzny</div>
@@ -411,10 +411,10 @@
             <div class="window-specs">
                 <div class="specs-section">
                     <div class="specs-title">Rama</div>
-                    {% if 'Rama' in item.configuration %}
+                    {% if 'Rama' in item.konfiguracja %}
                     <div class="specs-row">
                         <div class="specs-label">Typ ramy</div>
-                        <div class="specs-value">{{item.configuration['Rama']}}</div>
+                        <div class="specs-value">{{item.konfiguracja['Rama']}}</div>
                     </div>
                     {% endif %}
                     <div class="specs-row">
@@ -423,45 +423,45 @@
                     </div>
                     <div class="specs-row">
                         <div class="specs-label">Wymiary</div>
-                        <div class="specs-value"><strong>{{item.width}} mm × {{item.height}} mm</strong></div>
+                        <div class="specs-value"><strong>{{item.szerokosc}} mm × {{item.wysokosc}} mm</strong></div>
                     </div>
-                    {% if 'Profil' in item.configuration %}
+                    {% if 'Profil' in item.konfiguracja %}
                     <div class="specs-row">
                         <div class="specs-label">Profil</div>
-                        <div class="specs-value">{{item.configuration['Profil']}}</div>
+                        <div class="specs-value">{{item.konfiguracja['Profil']}}</div>
                     </div>
                     {% endif %}
-                    {% if 'Uszczelki' in item.configuration %}
+                    {% if 'Uszczelki' in item.konfiguracja %}
                     <div class="specs-row">
                         <div class="specs-label">Uszczelki</div>
-                        <div class="specs-value">{{item.configuration['Uszczelki']}}</div>
+                        <div class="specs-value">{{item.konfiguracja['Uszczelki']}}</div>
                     </div>
                     {% endif %}
                 </div>
                 
-                {% if 'Szklenie' in item.configuration %}
+                {% if 'Szklenie' in item.konfiguracja %}
                 <div class="specs-section">
                     <div class="specs-title">Szklenie</div>
                     <div class="specs-row">
                         <div class="specs-label">Typ szklenia</div>
-                        <div class="specs-value">{{item.configuration['Szklenie']}}</div>
+                        <div class="specs-value">{{item.konfiguracja['Szklenie']}}</div>
                     </div>
                 </div>
                 {% endif %}
                 
-                {% if 'Okucia' in item.configuration %}
+                {% if 'Okucia' in item.konfiguracja %}
                 <div class="specs-section">
                     <div class="specs-title">Okucia</div>
                     <div class="specs-row">
                         <div class="specs-label">Typ okuć</div>
-                        <div class="specs-value">{{item.configuration['Okucia']}}</div>
+                        <div class="specs-value">{{item.konfiguracja['Okucia']}}</div>
                     </div>
                 </div>
                 {% endif %}
                 
                 <div class="specs-section">
                     <div class="specs-title">Dodatkowe informacje</div>
-                    {% for category, value in item.configuration.items() %}
+                    {% for category, value in item.konfiguracja.items() %}
                     {% if category not in ['Rama', 'Szklenie', 'Okucia', 'Profil', 'Uszczelki', 'Kolor'] %}
                     <div class="specs-row">
                         <div class="specs-label">{{category}}</div>
@@ -482,16 +482,16 @@
                     <th>Wartość netto</th>
                 </tr>
                 <tr>
-                    <td>{{item.type_name}} {{item.width}}×{{item.height}} mm</td>
-                    <td>{{"{:.2f}".format(item.price_net)}} EUR</td>
-                    <td>{{item.quantity}}</td>
-                    <td>{{"{:.2f}".format(item.total_price_net)}} EUR</td>
+                    <td>{{item.typ}} {{item.szerokosc}}×{{item.wysokosc}} mm</td>
+                    <td>{{"{:.2f}".format(item.cena_netto)}} EUR</td>
+                    <td>{{item.ilosc}}</td>
+                    <td>{{"{:.2f}".format(item.cena_netto * item.ilosc)}} EUR</td>
                 </tr>
             </table>
         </div>
         
         <div class="window-price">
-            Cena łączna: {{"{:.2f}".format(item.total_price_net)}} EUR netto
+            Cena łączna: {{"{:.2f}".format(item.cena_netto * item.ilosc)}} EUR netto
         </div>
         
         <div class="system-signature">SYSTEM MADE BY AIO</div>
@@ -499,8 +499,8 @@
     {% endfor %}
     
     <div class="final-summary-page">
-        <div class="offer-title">Podsumowanie oferty {{offer.number}}</div>
-        <div class="offer-date-centered">{{offer.date}}</div>
+        <div class="offer-title">Podsumowanie oferty {{offer.numer}}</div>
+        <div class="offer-date-centered">{{offer.data}}</div>
         
         <div class="summary">
             <div class="summary-title">Zestawienie produktów</div>
@@ -520,11 +520,11 @@
                     {% for item in items %}
                     <tr>
                         <td>{{loop.index}}</td>
-                        <td><strong>{{item.type_name}}</strong></td>
-                        <td>{{item.width}} × {{item.height}}</td>
-                        <td>{{item.quantity}}</td>
-                        <td>{{"{:.2f}".format(item.price_net)}} EUR</td>
-                        <td>{{"{:.2f}".format(item.total_price_net)}} EUR</td>
+                        <td><strong>{{item.typ}}</strong></td>
+                        <td>{{item.szerokosc}} × {{item.wysokosc}}</td>
+                        <td>{{item.ilosc}}</td>
+                        <td>{{"{:.2f}".format(item.cena_netto)}} EUR</td>
+                        <td>{{"{:.2f}".format(item.cena_netto * item.ilosc)}} EUR</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -532,18 +532,22 @@
                     <tr>
                         <td colspan="4">Razem</td>
                         <td></td>
-                        <td>{{"{:.2f}".format(offer.net_total)}} EUR</td>
+                        <td>{{"{:.2f}".format(offer.suma_netto)}} EUR</td>
                     </tr>
                 </tfoot>
             </table>
             
             <div style="margin-top: 1cm;">
                 <p><strong>Szczegółowe podsumowanie słowne:</strong></p>
-                <p>Oferta zawiera {{items|length}} {% if items|length == 1 %}pozycję{% else %}pozycje{% endif %} asortymentowe, łącznie {{offer.total_quantity}} {% if offer.total_quantity == 1 %}sztukę{% elif offer.total_quantity <= 4 %}sztuki{% else %}sztuk{% endif %} produktów.</p>
+                {% set total_quantity = 0 %}
+                {% for item in items %}
+                    {% set total_quantity = total_quantity + item.ilosc %}
+                {% endfor %}
+                <p>Oferta zawiera {{items|length}} {% if items|length == 1 %}pozycję{% else %}pozycje{% endif %} asortymentowe, łącznie {{total_quantity}} {% if total_quantity == 1 %}sztukę{% elif total_quantity <= 4 %}sztuki{% else %}sztuk{% endif %} produktów.</p>
                 <p>Całość zamówienia obejmuje:</p>
                 <ul>
                     {% for item in items %}
-                    <li>{{item.quantity}} {% if item.quantity == 1 %}sztukę{% elif item.quantity <= 4 %}sztuki{% else %}sztuk{% endif %} produktu typu {{item.type_name}} o wymiarach {{item.width}}×{{item.height}} mm w cenie {{"{:.2f}".format(item.price_net)}} EUR netto za sztukę</li>
+                    <li>{{item.ilosc}} {% if item.ilosc == 1 %}sztukę{% elif item.ilosc <= 4 %}sztuki{% else %}sztuk{% endif %} produktu typu {{item.typ}} o wymiarach {{item.szerokosc}}×{{item.wysokosc}} mm w cenie {{"{:.2f}".format(item.cena_netto)}} EUR netto za sztukę</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -551,23 +555,23 @@
             <table class="summary-price-table">
                 <tr>
                     <td class="label">Suma netto:</td>
-                    <td class="value">{{"{:.2f}".format(offer.net_total)}} EUR</td>
+                    <td class="value">{{"{:.2f}".format(offer.suma_netto)}} EUR</td>
                 </tr>
                 <tr>
                     <td class="label">VAT ({{vat_rate}}%):</td>
-                    <td class="value">{{"{:.2f}".format(offer.vat_total)}} EUR</td>
+                    <td class="value">{{"{:.2f}".format(offer.suma_vat)}} EUR</td>
                 </tr>
                 <tr class="total-row">
                     <td class="label">Suma brutto:</td>
-                    <td class="value">{{"{:.2f}".format(offer.gross_total)}} EUR</td>
+                    <td class="value">{{"{:.2f}".format(offer.suma_brutto)}} EUR</td>
                 </tr>
             </table>
         </div>
         
-        {% if offer.notes %}
+        {% if offer.uwagi %}
         <div class="notes">
             <div class="notes-title">Uwagi:</div>
-            <p>{{offer.notes}}</p>
+            <p>{{offer.uwagi}}</p>
         </div>
         {% endif %}
         

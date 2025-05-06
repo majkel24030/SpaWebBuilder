@@ -1,6 +1,13 @@
 import { Offer, OfferFilter } from '../types';
 import { request } from './api';
 
+// Deklaracja globalnej funkcji window.downloadPDF
+declare global {
+  interface Window {
+    downloadPDF?: (offerId: number, offerNumber: string) => void;
+  }
+}
+
 /**
  * Get all offers for the current user
  */
@@ -110,16 +117,20 @@ export const downloadOfferPDF = async (id: number, offerNumber: string): Promise
       return;
     }
     
-    // Otwórz PDF bezpośrednio w nowej karcie
-    // Używamy bezpośredniego podejścia zamiast pobierania jako blob
-    const pdfUrl = `/api/offers/${id}/pdf`;
-    
-    // Utworzenie elementu <a> do otwarcia w nowej karcie
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    link.click();
+    // Używamy skryptu fix-pdf-download.js, który poprawnie obsługuje token
+    if (window.downloadPDF) {
+      window.downloadPDF(id, offerNumber);
+    } else {
+      // Dodajemy token do URL jako parametr zapytania
+      const pdfUrl = `/api/offers/${id}/pdf?token=${token}`;
+      
+      // Utworzenie elementu <a> do otwarcia w nowej karcie
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.click();
+    }
     
   } catch (error) {
     console.error('Error displaying PDF:', error);

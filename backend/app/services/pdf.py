@@ -56,17 +56,8 @@ def generate_offer_pdf(db: Session, offer: Offer) -> bytes:
     
     # Prepare data for template
     template_data = {
-        "offer": {
-            "number": offer.numer,
-            "date": offer.data,
-            "customer": offer.klient,
-            "notes": offer.uwagi,
-            "net_total": offer.suma_netto,
-            "vat_total": offer.suma_vat,
-            "gross_total": offer.suma_brutto,
-            "total_quantity": total_quantity
-        },
-        "items": items_data,
+        "offer": offer,  # Przekaż bezpośrednio obiekt oferty
+        "items": offer.items,  # Przekaż bezpośrednio elementy oferty
         "vat_rate": 23  # 23% VAT
     }
     
