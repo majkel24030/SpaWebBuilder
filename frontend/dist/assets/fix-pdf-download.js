@@ -122,10 +122,11 @@ window.downloadPDF = function(offerId, offerNumber) {
     return;
   }
 
-  // Create a request to get the PDF blob - dodajemy token jako parametr URL
-  fetch(`/api/offers/${offerId}/pdf?token=${encodeURIComponent(token)}`, {
+  // Create a request to get the PDF blob
+  fetch(`/api/offers/${offerId}/pdf`, {
     method: 'GET',
     headers: {
+      'Authorization': `Bearer ${token}`,
       'Accept': 'application/pdf',
     }
   })

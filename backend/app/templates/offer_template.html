@@ -414,9 +414,9 @@
                     {% set max_images = 4 %}
                     {% set show_images = item.ilosc if item.ilosc <= max_images else max_images %}
                     {% for i in range(show_images) %}
-                    <div class="multi-image-item">
+                    <div class="multi-image-item" style="margin-bottom: 1.2cm; clear: both;">
                         {% set aspect_ratio = item.szerokosc / item.wysokosc %}
-                        {% set base_width = 180 %}
+                        {% set base_width = 140 %}
                         {% set width = base_width %}
                         {% set height = base_width / aspect_ratio %}
                         <div class="placeholder-image" style="height: {{ height }}px;">

@@ -214,12 +214,29 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ onSave, onCan
           </label>
           <input
             type="number"
-            value={quantity}
+            value={quantity === 0 ? '' : quantity}
             onChange={(e) => {
-              const value = parseInt(e.target.value);
-              if (value > 0) {
+              const inputValue = e.target.value;
+              // Pozwól na puste pole jako stan przejściowy
+              if (inputValue === '') {
+                setQuantity(0);
+                return;
+              }
+              
+              const value = parseInt(inputValue, 10);
+              if (!isNaN(value)) {
                 setQuantity(value);
-                updateProductConfig('ilosc', value);
+                // Aktualizuj wartość w store tylko jeśli jest prawidłowa
+                if (value > 0) {
+                  updateProductConfig('ilosc', value);
+                }
+              }
+            }}
+            onBlur={() => {
+              // Podczas utraty fokusu, upewnij się, że wartość jest poprawna
+              if (quantity <= 0) {
+                setQuantity(1);
+                updateProductConfig('ilosc', 1);
               }
             }}
             min="1"
