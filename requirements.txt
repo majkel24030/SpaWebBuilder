@@ -6,3 +6,4 @@ sqlalchemy
 psycopg2-binary
 python-jose
 python-jose[cryptography]
+pydantic-settings
