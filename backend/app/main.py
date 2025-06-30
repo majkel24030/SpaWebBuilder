@@ -5,10 +5,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
-from app.api.router import api_router
-from app.database import engine, Base
-from app.utils.init_db import init_db, init_admin_user
-from app.api.deps import get_db
+from backend.app.api.router import api_router
+from backend.app.database import engine, Base
+from backend.app.utils.init_db import init_db, init_admin_user
+from backend.app.api.deps import get_db
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -108,4 +108,4 @@ if __name__ == "__main__":
         except (ValueError, IndexError):
             pass
     
-    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=port, reload=True)
