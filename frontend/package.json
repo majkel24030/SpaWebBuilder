@@ -1,13 +1,15 @@
 {
-  "name": "window-configurator-frontend",
+  "name": "windoor-config-frontend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5000",
     "dev:replit": "VITE_PORT=5000 vite --host 0.0.0.0 --port 5000 --strict-port",
-    "build": "tsc && vite build && cp src/fix-pdf-download.js dist/assets/",
-    "preview": "vite preview"
+    "build": "tsc && vite build",
+    "build:render": "npm install && tsc && vite build && cp public/_redirects dist/",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -20,6 +22,7 @@
     "postcss": "^8.4.23"
   },
   "devDependencies": {
+    "@types/node": "^18.15.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^3.1.0",

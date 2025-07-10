@@ -1,13 +1,39 @@
 services:
+  # Backend API Service
   - type: web
-    name: spa-web-builder-backend
+    name: windoor-config-backend
     env: python
     plan: free
     region: frankfurt
-
     buildCommand: "pip install -r requirements.txt"
     startCommand: "uvicorn backend.app.main:app --host 0.0.0.0 --port 10000"
-
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11
+        value: "3.11"
+      - key: ENVIRONMENT
+        value: "production"
+      - key: BACKEND_CORS_ORIGINS
+        value: '["*"]'
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: "HS256"
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+
+  # Frontend Static Site
+  - type: static
+    name: windoor-config-frontend
+    buildCommand: "cd frontend && npm install && npm run build"
+    publishPath: "frontend/dist"
+    envVars:
+      - key: NODE_VERSION
+        value: "18"
+
+# Database
+databases:
+  - name: windoor-config-db
+    databaseName: windoor_config
+    user: windoor_user
+    plan: free
+    region: frankfurt
