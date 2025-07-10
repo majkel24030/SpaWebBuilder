@@ -1,0 +1,17 @@
+
+# Frontend build artifacts
+frontend/dist/
+frontend/node_modules/
+frontend/package-lock.json
+
+# Backend artifacts
+backend/__pycache__/
+backend/.env
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
