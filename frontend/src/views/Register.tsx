@@ -69,7 +69,7 @@ const Register: React.FC = () => {
                   {...register('email', { 
                     required: 'Email jest wymagany',
                     validate: {
-                      validEmail: (value) => isValidEmail(value) || 'Niepoprawny format e-mail'
+                      validEmail: (value: string) => isValidEmail(value) || 'Niepoprawny format e-mail'
                     }
                   })}
                 />
@@ -120,7 +120,7 @@ const Register: React.FC = () => {
                   {...register('password', { 
                     required: 'Hasło jest wymagane',
                     validate: {
-                      validPassword: (value) => 
+                      validPassword: (value: string) => 
                         isValidPassword(value) || 
                         'Hasło musi mieć co najmniej 8 znaków, jedną literę i jedną cyfrę'
                     }
@@ -146,7 +146,7 @@ const Register: React.FC = () => {
                   {...register('confirmPassword', { 
                     required: 'Powtórz hasło',
                     validate: {
-                      matchesPassword: (value) => {
+                      matchesPassword: (value: string) => {
                         const password = watch('password');
                         return password === value || 'Hasła nie są zgodne';
                       }
