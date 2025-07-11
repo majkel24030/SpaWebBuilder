@@ -4,16 +4,16 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from datetime import date
 
-from app.api.deps import get_db, get_current_user, get_current_admin
-from app.models.user import User
-from app.models.offer import Offer, OfferItem
-from app.schemas.offer import (
+from backend.app.api.deps import get_db, get_current_user, get_current_admin
+from backend.app.models.user import User
+from backend.app.models.offer import Offer, OfferItem
+from backend.app.schemas.offer import (
     Offer as OfferSchema,
     OfferCreate,
     OfferUpdate,
     OfferFilter
 )
-from app.services.offer import (
+from backend.app.services.offer import (
     create_offer,
     get_offer,
     get_offers,
@@ -22,8 +22,8 @@ from app.services.offer import (
     is_offer_owner_or_admin,
     check_offer_exists
 )
-from app.services.pdf import generate_offer_pdf
-from app.services.auth import verify_token
+from backend.app.services.pdf import generate_offer_pdf
+from backend.app.services.auth import verify_token
 
 # Dodaj security scheme aby opcjonalnie przyjmować Authorization Bearer token
 oauth2_bearer = HTTPBearer(auto_error=False)
@@ -151,7 +151,7 @@ def generate_pdf(
     Generate PDF for offer - obsługuje autentykację zarówno z nagłówka jak i parametru URL
     """
     import logging
-    from app.services.auth import verify_token
+    from backend.app.services.auth import verify_token
     
     # Dodajemy szczegółowe logowanie
     logging.basicConfig(level=logging.INFO)

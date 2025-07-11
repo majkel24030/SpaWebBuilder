@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel
 
-from app.schemas.user import User
+from backend.app.schemas.user import User
 
 class Token(BaseModel):
     access_token: str

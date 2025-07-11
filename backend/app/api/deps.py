@@ -6,11 +6,11 @@ from jose import jwt, JWTError
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-from app.database import SessionLocal
-from app.models.user import User
-from app.schemas.auth import TokenPayload
-from app.utils.security import ALGORITHM
-from app.config import settings
+from backend.app.database import SessionLocal
+from backend.app.models.user import User
+from backend.app.schemas.auth import TokenPayload
+from backend.app.utils.security import ALGORITHM
+from backend.app.config import settings
 
 # OAuth2 scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
