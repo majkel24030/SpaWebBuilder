@@ -5,8 +5,8 @@ services:
     env: python
     plan: free
     region: frankfurt
-    buildCommand: "poetry install"
-    startCommand: "poetry run uvicorn backend.app.main:app --host 0.0.0.0 --port 10000"
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port 10000"
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.8"
@@ -34,7 +34,7 @@ services:
   # Frontend Static Site
   - type: static
     name: windoor-config-frontend
-    buildCommand: "cd frontend && npm ci && npm run build && cp public/_redirects dist/"
+    buildCommand: "cd frontend && npm ci && npm run build"
     publishPath: "frontend/dist"
     envVars:
       - key: NODE_VERSION

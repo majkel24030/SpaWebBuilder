@@ -18,37 +18,14 @@ echo -e "${BLUE}====================================${NC}"
 # Function to show menu
 show_menu() {
     echo -e "${YELLOW}Choose an option:${NC}"
-    echo -e "1. 🐳 Start with Docker (Recommended)"
-    echo -e "2. 🛠️  Manual Development Setup"
-    echo -e "3. 🌐 Deploy to Render.com"
-    echo -e "4. 📋 Show Status"
-    echo -e "5. 🛑 Stop All Services"
-    echo -e "6. 🧹 Clean Up"
-    echo -e "7. 📖 Show Documentation"
-    echo -e "8. ❌ Exit"
+    echo -e "1. 🛠️  Manual Development Setup"
+    echo -e "2. 🌐 Deploy to Render.com"
+    echo -e "3. 📋 Show Status"
+    echo -e "4. 🧹 Clean Up"
+    echo -e "5. 📖 Show Documentation"
+    echo -e "6. ❌ Exit"
     echo ""
-    read -p "Enter your choice (1-8): " choice
-}
-
-# Function to start with Docker
-start_docker() {
-    echo -e "${YELLOW}🐳 Starting with Docker...${NC}"
-    
-    # Check if Docker is installed
-    if ! command -v docker &> /dev/null; then
-        echo -e "${RED}❌ Docker not installed. Please install Docker first.${NC}"
-        exit 1
-    fi
-    
-    # Check if .env exists
-    if [ ! -f ".env" ]; then
-        echo -e "${YELLOW}📋 Creating .env file...${NC}"
-        cp .env.example .env
-        echo -e "${GREEN}✅ .env file created. Please edit it with your configuration.${NC}"
-    fi
-    
-    # Start services
-    ./docker-local.sh start
+    read -p "Enter your choice (1-6): " choice
 }
 
 # Function for manual setup
@@ -65,12 +42,6 @@ manual_setup() {
     if ! command -v python3 &> /dev/null; then
         echo -e "${RED}❌ Python3 not installed. Please install Python 3.11+${NC}"
         exit 1
-    fi
-    
-    # Setup environment
-    if [ ! -f ".env" ]; then
-        cp .env.example .env
-        echo -e "${GREEN}✅ .env file created. Please edit it with your configuration.${NC}"
     fi
     
     # Install frontend dependencies
@@ -101,13 +72,6 @@ deploy_render() {
 show_status() {
     echo -e "${YELLOW}📊 Checking system status...${NC}"
     
-    if command -v docker &> /dev/null; then
-        echo -e "${GREEN}✅ Docker: Installed${NC}"
-        ./docker-local.sh status
-    else
-        echo -e "${RED}❌ Docker: Not installed${NC}"
-    fi
-    
     if command -v node &> /dev/null; then
         NODE_VERSION=$(node -v)
         echo -e "${GREEN}✅ Node.js: $NODE_VERSION${NC}"
@@ -122,42 +86,22 @@ show_status() {
         echo -e "${RED}❌ Python: Not installed${NC}"
     fi
     
-    if [ -f ".env" ]; then
-        echo -e "${GREEN}✅ Environment: Configured${NC}"
+    if [ -f "render.yaml" ]; then
+        echo -e "${GREEN}✅ Render config: Ready${NC}"
     else
-        echo -e "${YELLOW}⚠️  Environment: Not configured${NC}"
-    fi
-}
-
-# Function to stop services
-stop_services() {
-    echo -e "${YELLOW}🛑 Stopping all services...${NC}"
-    if command -v docker &> /dev/null; then
-        ./docker-local.sh stop
+        echo -e "${RED}❌ Render config: Missing${NC}"
     fi
     
-    # Kill any running Node.js processes
-    pkill -f "npm run dev" 2>/dev/null || true
-    pkill -f "vite" 2>/dev/null || true
-    
-    # Kill any running Python processes
-    pkill -f "uvicorn" 2>/dev/null || true
-    pkill -f "fastapi" 2>/dev/null || true
-    
-    echo -e "${GREEN}✅ All services stopped.${NC}"
+    if [ -f "deploy-render.sh" ]; then
+        echo -e "${GREEN}✅ Deploy script: Ready${NC}"
+    else
+        echo -e "${RED}❌ Deploy script: Missing${NC}"
+    fi
 }
 
 # Function to clean up
 clean_up() {
     echo -e "${YELLOW}🧹 Cleaning up...${NC}"
-    
-    # Stop services first
-    stop_services
-    
-    # Docker cleanup
-    if command -v docker &> /dev/null; then
-        ./docker-local.sh clean
-    fi
     
     # Remove node_modules
     if [ -d "frontend/node_modules" ]; then
@@ -183,52 +127,40 @@ show_docs() {
     echo ""
     echo -e "${BLUE}📋 Project Documentation:${NC}"
     echo -e "• README.md - Main project documentation"
-    echo -e "• RENDER_DEPLOYMENT_BLUEPRINT.md - Complete deployment guide"
-    echo -e "• INSTRUKCJE_RENDER_DEPLOYMENT.md - Render.com instructions"
+    echo -e "• QUICK_START.md - Quick start guide"
     echo ""
     echo -e "${BLUE}🔗 Service URLs (when running):${NC}"
-    echo -e "• Frontend: http://localhost:3000"
+    echo -e "• Frontend: http://localhost:5000"
     echo -e "• Backend: http://localhost:8000"
     echo -e "• API Docs: http://localhost:8000/docs"
-    echo -e "• Database: localhost:5432"
-    echo ""
-    echo -e "${BLUE}🐳 Docker Commands:${NC}"
-    echo -e "• ./docker-local.sh start - Start all services"
-    echo -e "• ./docker-local.sh status - Check service status"
-    echo -e "• ./docker-local.sh logs - View logs"
-    echo -e "• ./docker-local.sh stop - Stop services"
     echo ""
     echo -e "${BLUE}🚀 Deployment:${NC}"
     echo -e "• ./deploy-render.sh - Deploy to Render.com"
+    echo -e "• render.yaml - Render configuration"
+    echo ""
 }
 
-# Main menu loop
+# Main loop
 while true; do
     show_menu
     
     case $choice in
         1)
-            start_docker
-            ;;
-        2)
             manual_setup
             ;;
-        3)
+        2)
             deploy_render
             ;;
-        4)
+        3)
             show_status
             ;;
-        5)
-            stop_services
-            ;;
-        6)
+        4)
             clean_up
             ;;
-        7)
+        5)
             show_docs
             ;;
-        8)
+        6)
             echo -e "${GREEN}👋 Goodbye!${NC}"
             exit 0
             ;;

@@ -35,7 +35,6 @@ REQUIRED_FILES=(
     "backend/requirements.txt"
     "frontend/package.json"
     "Rozszerzona_tabela_opcji.csv"
-    "frontend/public/_redirects"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do
@@ -89,12 +88,6 @@ if [ ! -d "dist" ]; then
     exit 1
 fi
 
-# Check if _redirects file is in dist
-if [ ! -f "dist/_redirects" ]; then
-    echo -e "${YELLOW}⚠️  _redirects file not found in dist. Copying...${NC}"
-    cp public/_redirects dist/
-fi
-
 cd ..
 
 # Validate render.yaml syntax
@@ -102,13 +95,6 @@ echo -e "${YELLOW}📋 Validating render.yaml...${NC}"
 if ! python3 -c "import yaml; yaml.safe_load(open('render.yaml'))" 2>/dev/null; then
     echo -e "${RED}❌ render.yaml has syntax errors.${NC}"
     exit 1
-fi
-
-# Create .env file if it doesn't exist
-if [ ! -f ".env" ]; then
-    echo -e "${YELLOW}📋 Creating .env file from template...${NC}"
-    cp .env.example .env
-    echo -e "${YELLOW}⚠️  Please edit .env file with your actual values before deployment.${NC}"
 fi
 
 # Git operations
