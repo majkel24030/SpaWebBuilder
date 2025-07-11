@@ -185,7 +185,6 @@ show_docs() {
     echo -e "• README.md - Main project documentation"
     echo -e "• RENDER_DEPLOYMENT_BLUEPRINT.md - Complete deployment guide"
     echo -e "• INSTRUKCJE_RENDER_DEPLOYMENT.md - Render.com instructions"
-    echo -e "• replit_agent/architecture.md - System architecture"
     echo ""
     echo -e "${BLUE}🔗 Service URLs (when running):${NC}"
     echo -e "• Frontend: http://localhost:3000"

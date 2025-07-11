@@ -134,7 +134,7 @@ docker-compose up -d --scale backend=3
 
 - **Deployment Guide**: [RENDER_DEPLOYMENT_BLUEPRINT.md](RENDER_DEPLOYMENT_BLUEPRINT.md)
 - **Render Instructions**: [INSTRUKCJE_RENDER_DEPLOYMENT.md](INSTRUKCJE_RENDER_DEPLOYMENT.md)
-- **Architecture**: [replit_agent/architecture.md](replit_agent/architecture.md)
+- **Architecture**: [Docker and Render](https://github.com/your-repo/wiki/Architecture)
 
 ## 🔧 Configuration
 
