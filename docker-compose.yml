@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: windoor-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: windoor_config
+      POSTGRES_USER: windoor_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-windoor_secure_password}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    networks:
+      - windoor-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U windoor_user -d windoor_config"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "5432:5432"
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: windoor-backend
+    restart: always
+    environment:
+      # Database Configuration
+      DATABASE_URL: postgresql://windoor_user:${POSTGRES_PASSWORD:-windoor_secure_password}@postgres:5432/windoor_config
+      
+      # FastAPI Configuration
+      SECRET_KEY: ${SECRET_KEY:-d026b3d4d927dfa346c8644149c07247b01fc51d1be4a49defa18aee764b6a0f}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      
+      # CORS Configuration
+      BACKEND_CORS_ORIGINS: '["http://localhost:3000", "http://localhost:80", "http://frontend:80"]'
+      
+      # Application Configuration
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      STORAGE_PATH: /app/storage
+      CSV_FILE_PATH: /app/Rozszerzona_tabela_opcji.csv
+      
+      # PostgreSQL Environment Variables
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: windoor_config
+      PGUSER: windoor_user
+      PGPASSWORD: ${POSTGRES_PASSWORD:-windoor_secure_password}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - windoor-network
+    volumes:
+      - backend_storage:/app/storage
+      - backend_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    ports:
+      - "8000:8000"
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: windoor-frontend
+    restart: always
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8000/api}
+      VITE_ENVIRONMENT: ${ENVIRONMENT:-production}
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - windoor-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    ports:
+      - "3000:80"
+
+  # Nginx Reverse Proxy (Optional - for production)
+  nginx:
+    image: nginx:alpine
+    container_name: windoor-nginx
+    restart: always
+    volumes:
+      - ./nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - windoor-network
+    ports:
+      - "80:80"
+      - "443:443"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis (Optional - for caching)
+  redis:
+    image: redis:7-alpine
+    container_name: windoor-redis
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - windoor-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_storage:
+    driver: local
+  backend_uploads:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  windoor-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16

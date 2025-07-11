@@ -1,45 +1,61 @@
-# ⚡ DEPLOY W 60 SEKUND
+# ⚡ Quick Start Guide
 
-## 🎯 TYLKO 3 KOMENDY:
+Get **Windoor Config System** up and running in minutes!
+
+## 🚀 One-Command Start
 
 ```bash
-# 1. Sprawdź gotowość
-./deploy.sh
-
-# 2. (Jeśli skrypt pyta) Wypchnij na GitHub
-# Skrypt zrobi: git add . && git commit && git push
-
-# 3. Idź na render.com → New → Blueprint → wybierz repo
+# Interactive setup menu
+./start.sh
 ```
 
-## 🚀 GOTOWE!
+## 🐳 Docker (Recommended)
 
-**Render automatycznie:**
-- Wykryje `render.yaml`
-- Utworzy backend (FastAPI + PostgreSQL)
-- Utworzy frontend (React SPA)
-- Skonfiguruje wszystkie zmienne
-- Uruchomi aplikację z SSL
+```bash
+# 1. Setup environment
+cp .env.example .env
+# Edit .env with your values
 
-**Czas deploymentu: ~10 minut**
+# 2. Start everything
+./docker-local.sh start
+
+# 3. Open application
+open http://localhost:3000
+```
+
+## �️ Manual Development
+
+```bash
+# 1. Install dependencies
+cd frontend && npm install && cd ..
+cd backend && pip install -r requirements.txt && cd ..
+
+# 2. Start services
+# Terminal 1: Frontend
+cd frontend && npm run dev
+
+# Terminal 2: Backend  
+cd backend && uvicorn app.main:app --reload
+```
+
+## 🌐 Deploy to Production
+
+```bash
+# Automated deployment to Render.com
+./deploy-render.sh
+```
+
+## 📋 Service URLs
+
+- **Frontend**: http://localhost:3000
+- **Backend**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+- **Database**: localhost:5432
+
+## 🆘 Need Help?
+
+Run `./start.sh` and choose option 7 for documentation links.
 
 ---
 
-## 📋 CHECKLIST:
-
-- ✅ `render.yaml` - gotowe
-- ✅ `_redirects` - gotowe  
-- ✅ `requirements.txt` - oczyszczone
-- ✅ `package.json` - zoptymalizowane
-- ✅ `vite.config.ts` - produkcyjne
-- ✅ `deploy.sh` - sprawdza wszystko
-
----
-
-## 🔗 REZULTAT:
-
-Po deploymencie dostaniesz:
-- **Frontend**: `https://windoor-config-frontend.onrender.com`
-- **API**: `https://windoor-config-backend.onrender.com/api`
-
-**Wszystko już przygotowane - tylko wypchnij i kliknij!** 🎉
+**That's it! 🎉** Your Windoor Config System is ready to use.
