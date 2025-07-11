@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String, Float, Date, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 
-from app.database import Base
+from backend.app.database import Base
 import datetime
 
 class Offer(Base):

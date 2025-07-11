@@ -3,10 +3,10 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_, desc, asc
 
-from app.models.user import User
-from app.models.offer import Offer, OfferItem
-from app.models.option import Option
-from app.schemas.offer import OfferCreate, OfferUpdate, OfferFilter
+from backend.app.models.user import User
+from backend.app.models.offer import Offer, OfferItem
+from backend.app.models.option import Option
+from backend.app.schemas.offer import OfferCreate, OfferUpdate, OfferFilter
 
 def create_offer(db: Session, offer_in: OfferCreate, user_id: int) -> Offer:
     """

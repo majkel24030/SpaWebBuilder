@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = os.getenv("PGUSER", "postgres")
     POSTGRES_PASSWORD: str = os.getenv("PGPASSWORD", "postgres")
     POSTGRES_DB: str = os.getenv("PGDATABASE", "windows_db")
-    POSTGRES_PORT: str = os.getenv("PGPORT", "5432")
+    POSTGRES_PORT: int = int(os.getenv("PGPORT", "5432"))
     DATABASE_URL: Optional[PostgresDsn] = None
 
     @validator("DATABASE_URL", pre=True)

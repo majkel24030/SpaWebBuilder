@@ -2,15 +2,15 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, get_current_user, get_current_admin
-from app.models.user import User
-from app.schemas.user import (
+from backend.app.api.deps import get_db, get_current_user, get_current_admin
+from backend.app.models.user import User
+from backend.app.schemas.user import (
     User as UserSchema,
     UserUpdate,
     UserStatusUpdate,
     UserUpdatePassword
 )
-from app.services.auth import get_password_hash, verify_password
+from backend.app.services.auth import get_password_hash, verify_password
 
 router = APIRouter()
 

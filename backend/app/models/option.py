@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Float, UniqueConstraint
 
-from app.database import Base
+from backend.app.database import Base
 
 class Option(Base):
     __tablename__ = "options"

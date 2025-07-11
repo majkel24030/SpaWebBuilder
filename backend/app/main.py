@@ -10,8 +10,13 @@ from backend.app.database import engine, Base
 from backend.app.utils.init_db import init_db, init_admin_user
 from backend.app.api.deps import get_db
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Create database tables (only if database is available)
+try:
+    Base.metadata.create_all(bind=engine)
+    print("Database tables created successfully")
+except Exception as e:
+    print(f"Warning: Could not create database tables: {e}")
+    print("This is normal if no database is available (e.g., in development)")
 
 app = FastAPI(
     title="Windoor Config System",
@@ -86,14 +91,18 @@ else:
 
 @app.on_event("startup")
 async def startup_event():
-    db = next(get_db())
     try:
-        # Initialize database with options from CSV
-        init_db(db)
-        # Create initial admin user if not exists
-        init_admin_user(db)
-    finally:
-        db.close()
+        db = next(get_db())
+        try:
+            # Initialize database with options from CSV
+            init_db(db)
+            # Create initial admin user if not exists
+            init_admin_user(db)
+        finally:
+            db.close()
+    except Exception as e:
+        print(f"Warning: Could not initialize database: {e}")
+        print("This is normal if no database is available (e.g., in development)")
 
 if __name__ == "__main__":
     import uvicorn

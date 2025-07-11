@@ -1,16 +1,16 @@
 from sqlalchemy.orm import Session
 import os
-from app.models.user import User
-from app.utils.csv_loader import load_options_from_csv
-from app.services.auth import get_password_hash
-from app.config import settings
+from backend.app.models.user import User
+from backend.app.utils.csv_loader import load_options_from_csv
+from backend.app.services.auth import get_password_hash
+from backend.app.config import settings
 
 def init_db(db: Session) -> None:
     """
     Initialize database with options from CSV
     """
     # Load options from CSV if file exists
-    from app.models.option import Option
+    from backend.app.models.option import Option
     
     # Check if options already exist
     if db.query(Option).count() == 0:

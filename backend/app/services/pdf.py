@@ -5,9 +5,9 @@ from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML
 from sqlalchemy.orm import Session
 
-from app.models.offer import Offer, OfferItem
-from app.models.option import Option
-from app.config import settings
+from backend.app.models.offer import Offer, OfferItem
+from backend.app.models.option import Option
+from backend.app.config import settings
 
 def generate_offer_pdf(db: Session, offer: Offer) -> bytes:
     """

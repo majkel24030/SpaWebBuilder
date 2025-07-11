@@ -1,7 +1,7 @@
 import csv
 from sqlalchemy.orm import Session
-from app.models.option import Option
-from app.config import settings
+from backend.app.models.option import Option
+from backend.app.config import settings
 
 def load_options_from_csv(db: Session, csv_file_path: str) -> None:
     """
