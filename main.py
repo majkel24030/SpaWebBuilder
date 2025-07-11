@@ -1,5 +1,5 @@
 """
-Main entry point for Replit
+Main entry point for Docker and Render
 """
 import os
 import sys

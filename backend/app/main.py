@@ -100,7 +100,7 @@ if __name__ == "__main__":
     import sys
     
     # Check for command line arguments
-    port = 8080  # Default port for Replit
+    port = 8080
     if "--port" in sys.argv:
         try:
             port_index = sys.argv.index("--port") + 1
