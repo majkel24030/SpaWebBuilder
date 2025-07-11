@@ -1,0 +1,7 @@
+# SPA Routing - wszystkie ścieżki przekierowane na index.html
+# Wyjątki dla API i assets
+/api/*  https://windoor-config-backend.onrender.com/api/:splat  200!
+/assets/*  /assets/:splat  200
+
+# Wszystkie inne ścieżki na index.html dla React Router
+/*    /index.html   200
